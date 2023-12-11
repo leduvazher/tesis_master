@@ -2,6 +2,7 @@ install.packages("dplyr")
 install.packages("purrr")
 install.packages("foreign") 
 install.packages("tidyverse")
+install.packages("gtrendsR")
 
 
 library(foreign)
@@ -9,6 +10,7 @@ library(dplyr)
 library(purrr)
 library(stringr)
 library(tidyverse)
+library(gtrendsR)
 
 
 carpeta <- "C:/Users/eduva/Documents/Tesis/dataset"
@@ -165,7 +167,7 @@ check_edad <- dataframe_final_stg %>% count(EDAD_FIXED)
 check_edad
 
 dataframe_final_stg$EDAD_FIXED_GROUP  <- if_else(dataframe_final_stg$EDAD_FIXED == "No especificado","No especificado", 
-                                                 if_else(dataframe_final_stg$EDAD_FIXED < 18 , "Adulto", "No adulto" ))
+                                                 if_else(dataframe_final_stg$EDAD_FIXED < 18 , "Adulto", "No_adulto" ))
 
 check_edad <- dataframe_final_stg %>% count(EDAD_FIXED_GROUP)
 check_edad
@@ -196,8 +198,9 @@ filter(dataframe_final_stg, ENT_OCURR == 33)
 ###2. Mes Ocurr:             -Filtrar homocidios no especificados
 ###                          -Filtrar registros en blanco
 ###3. Correr script para validar si existen valores no especificados
-###4. Edad Fixed             -Filtrar registros no especificados
-###5. Indice de paz          -Borrar Nulls
+###4. Estado: quitar los Estados 34 y 35 y aquellos no especificados
+###5. Edad Fixed             -Filtrar registros no especificados
+###6. Crear fecha con ANIO_OCURR AND MES OCURRE
 
 
 
@@ -210,138 +213,147 @@ dataframe_final_stg_test %>% distinct(ANIO_OCUR_FIXED)
 
 dataframe_final_stg <- filter(dataframe_final_stg, ANIO_OCUR_FIXED > 1989 & ANIO_OCUR_FIXED != "No especificado")
 
-###Filtrar mes no especificados
+######Filtrar mes no especificados
 
 dataframe_final_stg %>% distinct(MES_OCURR)  ##Revisamos la data de los homocidios no especificados
 dataframe_final_stg %>% count(MES_OCURR)
 
-dataframe_final_stg_test %>% filter(dataframe_final_stg, MES_OCURR != "99")
-dataframe_final_stg %>% distinct(MES_OCURR)
+#Pruebas filtrar no especificados
 
+dataframe_final_stg_test <- dataframe_final_stg_test %>% filter(MES_OCURR != "99")
+dataframe_final_stg_test %>% distinct(MES_OCURR)
 
+#Final filtrar no especificados
 
+dataframe_final_stg <- dataframe_final_stg %>% filter(MES_OCURR != "99")
 
-subset(dataframe_final_stg,ENT_REGIS == 16 & MUN_REGIS == 108 & 
-         ENT_OCURR == 16 & MUN_OCURR == 108 & SEXO == "Hombre,")
+dataframe_final_stg
 
+####Revisamos base de datos
 
-dataframe_final_stg %>% distinct(ANIO_OCUR_FIXED)
+write.csv(dataframe_final_stg, "df_hom.csv")
 
-dataframe_final_stg <- filter(dataframe_final_stg, ANIO_OCUR_FIXED == 2)
+####Filtrar los Estados 34 y 35 y filtrar los no especificados
 
+#Pruebas
 
+dataframe_final_stg_test <- filter(dataframe_final_stg, ENT_OCURR < 33)
+dataframe_final_stg_test %>% distinct(ENT_OCURR)
 
+#Produccion
 
+dataframe_final_stg <- filter(dataframe_final_stg, ENT_OCURR < 33)
 
+#Validamos
 
+write.csv(dataframe_final_stg, "check_states.csv")
 
-check_edad <- dataframe_final_stg %>% count(EDAD_FIXED_GROUP)
-check_edad
+####4. Filtrar Edad Fixed Registros no especificados
 
+#Prueba
 
-###Data Analysis Numero 1
+dataframe_final_stg_test <- filter(dataframe_final_stg, EDAD_FIXED != "No especificado")
+dataframe_final_stg_test %>% distinct(EDAD_FIXED)
 
+#Produccion
 
-          
+dataframe_final_stg <- filter(dataframe_final_stg, EDAD_FIXED != "No especificado")
 
-check <- dataframe_final_stg %>% count(ANIO_OCUR_FIXED)
-check
+#Revisar CSV
 
+write.csv(dataframe_final_stg, "check_age_fixed.csv")
 
 
+####5. Filtrar registros no especificados en Edad
 
-#final
+#Pruebas
 
-df_hom <- dataframe_final_stg
+dataframe_final_stg_test <- filter(dataframe_final_stg, SEXO != "No especificado")
+dataframe_final_stg_test %>% distinct(SEXO)
 
-####GROUP BY datasets
+#Produccion
 
-df_hom_grouped <-    df_hom %>%
-                        group_by(ANIO_OCUR,MES_OCURR,EDAD_FIXED_GROUP,indice_paz) %>%
-                        summarise(n = n())
+dataframe_final_stg <- filter(dataframe_final_stg, SEXO != "No especificado")
 
+#Revisar CSV
 
-df_hom_grouped
+write.csv(dataframe_final_stg, "check_sexo.csv")
 
+###6. Crear fecha con ANIO_OCURR AND MES OCURRE
 
-as.Date(paste(df_hom_grouped$ANIO_OCUR_FIXED, df_hom_grouped$MES_OCURR, "01", sep = "-"),format = "%Y-%m-%d")
+#Revisar
 
-###Spread
+dataframe_final_stg_test <- dataframe_final_stg_test %>% 
+                            mutate('DATETIME' = make_date(year = ANIO_OCUR_FIXED, month = MES_OCURR))
 
-write.csv(df_hom, "df_hom.csv")
+dataframe_final_stg_test %>% distinct(DATETIME)
 
+#Produccion
 
-test <- spread(df_hom_grouped,key=c(EDAD_FIXED_GROUP,indice_paz), value=n)
-test
+dataframe_final_stg <- dataframe_final_stg %>% 
+                            mutate('DATETIME' = make_date(year = ANIO_OCUR_FIXED, month = MES_OCURR))
 
-test1 <- spread(test1)
+write.csv(dataframe_final_stg, "check_fecha.csv")
 
 
+###7. Crear variable para tomar las demas agrupaciones
 
-
-
-
-
-dataframe_final_stg %>%
-  left_join(catalogo_estados %>% dplyr::select(indice_paz),
-            by = c("ENT_REGIS" = "clave")) %>%
-  mutate(matched = dplyr::match(clave, ENT_REGIS))
-
-
-left_join(first_df,
-          second_df %>% dplyr::select(date, elephants, cats),
-          by = "date")
-
-left_join(dataframe_final_stg,
-          catalogo_estados,
-          by = c("ENT_REGIS" = "clave"))
-
-
-
-
-
-
-
-df_hom <- dataframe_final_stg
-
-####Resultados
-
-check <- dataframe_final %>% count(ANIO_REGIS, FILE_NAME)
-check
-
-write.csv(check, "file.csv")
-
-dataframe_final_stg %>% distinct(ANIO_REGIS)
-
-dataframe_final_stg %>% distinct(ANIO_OCUR)
-
-dataframe_final_stg %>% count(ANIO_REGIS, sort = TRUE)
-
-dataframe_final_stg %>% count(ANIO_OCUR, FILE_NAME, sort = TRUE)
-
-
-dataframe_final_stg %>%
-  count(entidad, sort = TRUE)
-
-
-
-
-
-
-
+dataframe_final_stg$DIM <- paste0(dataframe_final_stg$SEXO,"_",dataframe_final_stg$EDAD_FIXED_GROUP,"_",dataframe_final_stg$indice_paz)
+  
 str(dataframe_final_stg)
 
+head(dataframe_final_stg)
+
+####Preparar base de datos para el modelo
+####Data Normalization
 
 
-check <- subset(dataframe_final, ANIO_OCUR == 9999)
-summary(dataframe_final)
+df_final <- dataframe_final_stg %>% select(DATETIME, ENT_OCURR, SEXO,EDAD_FIXED_GROUP,indice_paz, DIM) %>%
+                                 group_by(DATETIME,EDAD_FIXED_GROUP,indice_paz, SEXO, DIM) %>%
+                                 summarise(REGISTERS = n())
 
-#Read dbf
+df_final
 
 
-defun_dataframes_new <- lapply(seq_along(defun_dataframes), function(i) {
-  defun_dataframes[[i]]$FileName <- paste0("file", i)
-  return(defun_dataframes[[i]])
-})
+###Spread de los datos del dataframe final
 
-my_data <- imap(defun_dataframes, ~ .x %>% mutate(file_title = .y))
+###Edad
+
+
+df_final_edad_fixed <- df_final %>%
+                       group_by(DATETIME,EDAD_FIXED_GROUP) %>%
+                       summarise(REGISTERS = sum(REGISTERS))
+
+df_spread_edad_fixed <- spread(df_final_edad_fixed, key = "EDAD_FIXED_GROUP", value = REGISTERS)
+
+###State
+
+df_final_indice_paz <- df_final %>%
+                       group_by(DATETIME,indice_paz) %>%
+                       summarise(REGISTERS = sum(REGISTERS))
+
+df_spread_indice_paz <- spread(df_final_indice_paz, key = "indice_paz", value = REGISTERS)
+
+###Hombres Mayores 18, Mujeres Mayores 18 por indice de paz
+
+df_final_DIM <- df_final %>%
+                       group_by(DATETIME,DIM) %>%
+                       summarise(REGISTERS = sum(REGISTERS))
+
+df_spread_dim <- spread(df_final_DIM, key = "DIM", value = REGISTERS)
+
+
+###Join two tables
+
+#Unimos los homicidios de edad con las categorias del indice de paz
+
+df_final_hom <- left_join(df_spread_edad_fixed, df_spread_indice_paz)
+
+#Unimos el previo con la tabla DIM
+
+df_final_hom <- left_join(df_final_hom, df_spread_dim)
+
+
+##Dataset final
+
+head(df_final_hom)
