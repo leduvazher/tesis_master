@@ -1,10 +1,3 @@
-install.packages("dplyr")
-install.packages("purrr")
-install.packages("foreign") 
-install.packages("tidyverse")
-install.packages("gtrendsR")
-  
-  
 library(foreign)
 library(dplyr)
 library(purrr)
@@ -369,6 +362,7 @@ head(df_final_hom)
 ########Cargamos informacion de google Trends
 
 ###df_homicidios_csv
+##id_01
 
 
 df_homicidios_csv <- read.csv("C:/Users/eduva/Documents/Tesis/Google Trends/queries/df_homicidios.csv")
@@ -379,7 +373,24 @@ df_homicidios_csv <- df_homicidios_csv %>%
 
 df_homicidios_spread_csv <- spread(df_homicidios_csv, key = keyword, value = index)
 
+df_homicidios_spread_csv$date <- as.Date(df_homicidios_spread_csv$date)
+
+head(df_homicidios_spread_csv)
+str(df_homicidios_spread_csv)
+
+#rename variables
+
+df_homicidios_spread_csv <- df_homicidios_spread_csv %>% rename(mato_01 = mato,
+                                                                metanfetamilo_01 = metanfetamilo,
+                                                                muertes_01 = muertes,
+                                                                muerto_01 = muerto,
+                                                                narcotrafico_01 = narcotrafico) 
+
+head(df_homicidios_spread_csv)
+
+
 ###df_hom_adulto
+#id: 02
 
 df_hom_adulto_csv <- read.csv("C:/Users/eduva/Documents/Tesis/Google Trends/queries/df_hom_adulto.csv")
 head(df_hom_adulto_csv)
@@ -395,7 +406,23 @@ df_hom_adulto_csv <- df_hom_adulto_csv %>%
 
 df_hom_adulto_spread_csv <- spread(df_hom_adulto_csv, key = keyword, value = index)
 
+df_hom_adulto_spread_csv$date <- as.Date(df_hom_adulto_spread_csv$date)
+
+head(df_hom_adulto_spread_csv)
+str(df_hom_adulto_spread_csv)
+
+#rename variables
+
+df_hom_adulto_spread_csv <- df_hom_adulto_spread_csv %>% rename(asesinato_02 = asesinato,
+                                                                homicidio_02 = homicidio,
+                                                                muerte_02 = muerte) 
+
+head(df_hom_adulto_spread_csv)
+
+
 ##df_hom_no_adulto
+
+#variable 03
 
 #Existen registros que son <1 por lo cual les estoy poniendo 0.5
 
@@ -412,7 +439,25 @@ df_hom_no_adulto_csv <- df_hom_no_adulto_csv %>%
 
 df_hom_no_adulto_spread_csv <- spread(df_hom_no_adulto_csv, key = keyword, value = index)
 
+##Convertimos a fecha ya que esta incorrecto el formato
+
+df_hom_no_adulto_spread_csv$date <- as.Date(df_hom_no_adulto_spread_csv$date)
+
+head(df_hom_no_adulto_spread_csv)
+str(df_hom_no_adulto_spread_csv)
+
+###cambiamos los nombres
+
+df_hom_no_adulto_spread_csv <- df_hom_no_adulto_spread_csv %>% rename(homicidio_menor_edad_03    = "homicidio menor de edad",
+                                                                      muerte_menor_edad_03       = "muerte menor de edad",
+                                                                      narcotrafico_menor_edad_03 = "narcotrafico menor de edad") 
+
+head(df_hom_no_adulto_spread_csv)
+
+
 ##df_hom_hombre_adulto
+
+#variable 04
 
 df_hom_hombre_adulto_csv <- read.csv("C:/Users/eduva/Documents/Tesis/Google Trends/queries/df_hom_hombre_adulto.csv")
 
@@ -424,7 +469,25 @@ df_hom_hombre_adulto_csv <- df_hom_hombre_adulto_csv %>%
 
 df_hom_hombre_adulto_spread_csv <- spread(df_hom_hombre_adulto_csv, key = keyword, value = index)
 
+##Convertimos a fecha ya que esta incorrecto el formato
+
+df_hom_hombre_adulto_spread_csv$date <- as.Date(df_hom_hombre_adulto_spread_csv$date)
+
+head(df_hom_hombre_adulto_spread_csv)
+str(df_hom_hombre_adulto_spread_csv)
+
+###cambiamos los nombres
+
+df_hom_hombre_adulto_spread_csv <- df_hom_hombre_adulto_spread_csv %>% rename(homicidio_hombre_04    = "homicidio hombre",
+                                                                              muerte_hombre_04       = "muerte hombre",
+                                                                              narcotrafico_04        = "narcotrafico hombre") 
+
+head(df_hom_hombre_adulto_spread_csv)
+
+
 ##df_hom_ninos
+
+#id = 05
 
 df_hom_ninos_csv <- read.csv("C:/Users/eduva/Documents/Tesis/Google Trends/queries/df_hom_ninos.csv")
 
@@ -454,7 +517,26 @@ df_hom_muj_adulto_csv  <- df_hom_muj_adulto_csv %>%
 
 df_hom_muj_spread_csv <- spread(df_hom_muj_adulto_csv, key = keyword, value = index)
 
+
+##Convertimos a fecha ya que esta incorrecto el formato
+
+df_hom_muj_spread_csv$date <- as.Date(df_hom_muj_spread_csv$date)
+
+head(df_hom_muj_spread_csv)
+str(df_hom_muj_spread_csv)
+
+
+###cambiamos los nombres
+
+df_hom_muj_spread_csv <- df_hom_muj_spread_csv %>% rename (feminicidio_05        = "feminicidio",
+                                                           muerte_mujer_05       = "muerte mujer",
+                                                           narcotrafico_mujer_05 = "narcotrafico mujer") 
+
+head(df_hom_muj_spread_csv)
+
 ##df_hom_ninas
+
+#id 06
 
 df_hom_ninas_csv <- read.csv("C:/Users/eduva/Documents/Tesis/Google Trends/queries/df_hom_ninas.csv")
 
@@ -468,3 +550,40 @@ df_hom_ninas_csv  <-      df_hom_ninas_csv %>%
                           summarise(index = mean(as.numeric(hits)))
 
 df_hom_ninas_spread_csv <- spread(df_hom_ninas_csv, key = keyword, value = index)
+
+
+##Convertimos a fecha ya que esta incorrecto el formato
+
+df_hom_ninas_spread_csv$date <- as.Date(df_hom_ninas_spread_csv$date)
+
+head(df_hom_ninas_spread_csv)
+str(df_hom_ninas_spread_csv)
+
+###cambiamos los nombres
+
+df_hom_ninas_spread_csv <- df_hom_ninas_spread_csv %>% rename ( `asesinato_nina_06`        = "asesinato niña",
+                                                                 feminicidio_nina_06       = "feminicidio niña",
+                                                                 muerte_nina_06            = "muerte niña",
+                                                                 violencia_nina_06         = "violencia niña") 
+
+
+
+
+##Hacemos el join 
+
+
+head(df_final_hom)
+
+df_final_hom_01_id_01 <- left_join(df_final_hom, df_homicidios_spread_csv, by = c("DATETIME" = "date"))
+head(df_final_hom_01_id_01)
+
+joined_data <- df_final_hom %>% 
+               left_join(df_homicidios_spread_csv, by = c("DATETIME" = "date")) %>% 
+               left_join(df_hom_adulto_spread_csv, by = c("DATETIME" = "date")) %>%
+               left_join(df_hom_no_adulto_spread_csv, by = c("DATETIME" = "date")) %>%
+               left_join(df_hom_hombre_adulto_spread_csv, by = c("DATETIME" = "date")) %>%
+               left_join(df_hom_muj_spread_csv, by = c("DATETIME" = "date")) %>%
+               left_join(df_hom_ninas_spread_csv, by = c("DATETIME" = "date")) 
+
+
+head(joined_data)
