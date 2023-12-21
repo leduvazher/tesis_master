@@ -27,7 +27,7 @@ df_hom_no_adulto <- homicidios_no_adulto$interest_over_time
 df_hom_no_adulto %>% distinct(keyword)
 write.csv(df_hom_no_adulto, "df_hom_no_adulto.csv")
 
-homicidios_hombre_adulto <- gtrends(keyword = c("homocidio hombre", "muerte hombre", "narcotrafico hombre"), time = "all",
+homicidios_hombre_adulto <- gtrends(keyword = c("homicidio hombre", "muerte hombre", "narcotrafico hombre"), time = "all",
                                     geo = "MX", Sys.sleep(10))
 df_hom_hombre_adulto <- homicidios_hombre_adulto$interest_over_time
 df_hom_hombre_adulto %>% distinct(keyword)
