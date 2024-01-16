@@ -1,10 +1,33 @@
+#install.packages("dplyr")
+#install.packages("purrr")
+#install.packages("foreign") 
+#install.packages("tidyverse")
+#install.packages("gtrendsR")
+#install.packages("corrplot")
+#install.packages("ggcorrplot")
+#install.packages("FactoMineR")
+#install.packages("pls")
+#install.packages("ggfortify")
+
+
+
+  
+library(corrplot)
 library(foreign)
 library(dplyr)
 library(purrr)
 library(stringr)
 library(tidyverse)
 library(gtrendsR)
-  
+library(data.table)
+library(vars)
+library(ggcorrplot)
+library(FactoMineR)
+library(pls)
+library(ggfortify)
+
+
+setwd("C:/Users/eduva/Documents/Tesis/dataset")
   
 carpeta <- "C:/Users/eduva/Documents/Tesis/dataset"
 
@@ -42,7 +65,7 @@ defun_dataframes_name$DEFUN22.dbf <- defun_dataframes_name$DEFUN22.dbf %>%   ren
   
 defun_filtered <- lapply(defun_dataframes_name, function(df) {
   df %>%
-    select(ENT_REGIS, MUN_REGIS, ENT_OCURR, MUN_OCURR, SEXO, MES_OCURR, ANIO_OCUR, 
+    dplyr::select(ENT_REGIS, MUN_REGIS, ENT_OCURR, MUN_OCURR, SEXO, MES_OCURR, ANIO_OCUR, 
            MES_REGIS, ANIO_REGIS, EDAD_AGRU, ANIO_NACIM, PRESUNTO, FILE_NAME)
 })
   
@@ -88,7 +111,7 @@ dataframe_final_stg <- dataframe_final_stg %>%
     ENT_REGIS_NAME = entidad
   )
   
-dataframe_final_stg <- select(dataframe_final_stg, -indice_paz)
+dataframe_final_stg <- dplyr::select(dataframe_final_stg, -indice_paz)
   
 ###ENT_OCURR
   
@@ -101,7 +124,7 @@ dataframe_final_stg <- dataframe_final_stg %>%
     ENT_OCURR_NAME = entidad
   )
   
-dataframe_final_stg <- select(dataframe_final_stg, -indice_paz)
+dataframe_final_stg <- dplyr::select(dataframe_final_stg, -indice_paz)
   
 ###filtromos los homidicios
   
@@ -174,7 +197,7 @@ dataframe_final_stg <- left_join(dataframe_final_stg,
                                  catalogo_estados,
                                  by = c("ENT_REGIS" = "clave"))
   
-dataframe_final_stg <- select(dataframe_final_stg, -c(entidad))
+dataframe_final_stg <- dplyr::select(dataframe_final_stg, -c(entidad))
   
 check_ent_ocur <- dataframe_final_stg %>% count(ENT_OCURR)
 check_ent_ocur
@@ -302,7 +325,7 @@ head(dataframe_final_stg)
 ####Data Normalization
   
   
-df_final <- dataframe_final_stg %>% select(DATETIME, ENT_OCURR, SEXO,EDAD_FIXED_GROUP,indice_paz, DIM) %>%
+df_final <- dataframe_final_stg %>% dplyr::select(DATETIME, ENT_OCURR, SEXO,EDAD_FIXED_GROUP,indice_paz, DIM) %>%
                                  group_by(DATETIME,EDAD_FIXED_GROUP,indice_paz, SEXO, DIM) %>%
                                  summarise(REGISTERS = n())
   
@@ -587,3 +610,98 @@ joined_data <- df_final_hom %>%
 
 
 head(joined_data)
+
+joined_data <- filter(joined_data, DATETIME > "2003-12-01")
+
+head(joined_data)
+
+
+########Modelos
+
+
+###Create PCA
+
+pca_dataset <- dplyr::select(joined_data %>%
+                             ungroup (),
+                             -c(DATETIME, Adulto, No_adulto, Hombre_Adulto,
+                             Hombre_No_adulto, Mujer_Adulto, Mujer_No_adulto,
+                             metanfetamilo_01, muerte_menor_edad_03,	
+                             narcotrafico_menor_edad_03, narcotrafico_04, narcotrafico_mujer_05,
+                             feminicidio_nina_06,
+                             ))
+
+# La validacion de cifras fue exitosa, puede que no coincida por con las cifras totales por 
+#loa NA
+#check_data <-  dplyr::select(joined_data, DATETIME, Adulto, No_adulto, Hombre_Adulto,
+#                             Hombre_No_adulto, Mujer_Adulto, Mujer_No_adulto )
+
+#write.csv(check_data, "check_data.csv")
+
+str(pca_dataset)
+
+###Tenemos ceros en las correlacciones hay que quitar las variables que no nos sirven
+#view()
+
+matriz_cuant <-data.matrix(pca_dataset)
+
+matriz_cuant
+
+# Check for null values 
+
+colSums(is.na(matriz_cuant))
+
+# Estandarizar la matriz de datos
+
+
+data1 <- stdize(as.matrix(matriz_cuant), center = TRUE, scale = TRUE) 
+data1 <- as.data.frame(data1)
+sapply(data1,mean)
+
+
+boxplot(matriz_cuant, main = "Variabilidad en datos")
+boxplot(data1, main = "Variabilidad en datos")
+
+
+#analizar las correlaciones 
+
+min(cor(matriz_cuant))
+
+summary(matriz_cuant)
+
+##modelo acp
+
+
+ACP <- prcomp(matriz_cuant, ccenter = TRUE, scale. = TRUE)
+plot(ACP)
+ACP
+
+
+#######PLOT PCA
+
+
+autoplot(ACP, data = matriz_cuant)
+biplot(ACP)
+
+#prcomp$sdev -> raiz cuadrada de eigenvalores
+#prcomp$rotation -> eigenvectores (coeficientes de las combinaciones lineales, que determinan a los CP)
+#prcomp$x -> componentes principales
+
+ACP#
+ACP$sdev
+ACP$x
+acp <- as.data.frame(ACP$x)
+acp
+ACP$rotation
+?prcomp
+
+
+plot(acp$PC1)
+plot(acp$PC2)
+
+joined_data_acp <- as.data.frame(cbind(joined_data$DATETIME, joined_data$Hombre_Adulto, joined_data$Hombre_No_adulto, 
+                                  joined_data$Mujer_Adulto, joined_data$Mujer_No_adulto,
+                                  acp$PC1, acp$PC2, acp$PC3, acp$PC4))
+str(joined_data_acp)
+
+colnames(joined_data_acp) <- c("DATETIME", "Hombre_Adulto", "Hombre_No_adulto", "Mujer_Adulto", "Mujer_No_adulto", 
+                          "pc1", "pc2", "pc3", "pc4")
