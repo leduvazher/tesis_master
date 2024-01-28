@@ -14,7 +14,11 @@
 #install.packages("ggplot2")
 #install.packages("tseries")
 #install.packages("forecast")
+#install.packages("ggpubr")
+#install.packages("rugarch")
 
+library(rugarch)
+library(ggpubr)
 library(corrplot)
 library(foreign)
 library(dplyr)
@@ -29,12 +33,12 @@ library(FactoMineR)
 library(pls)
 library(ggfortify)
 library(factoextra)
-library(tms)
 library(mFilter)
 library(ggplot2)
-library(tser)
 library(forecast)
 library(tseries)
+library(rugarch)
+
 
 setwd("C:/Users/eduva/Documents/Tesis/dataset")
   
@@ -342,6 +346,14 @@ df_final
   
   
 ###Spread de los datos del dataframe final
+
+###Final homicidios
+
+
+df_final_homicidios  <- df_final %>%
+                       group_by(DATETIME) %>%
+                       summarise(total_hom = sum(REGISTERS))
+
   
 ###Edad
   
@@ -373,7 +385,10 @@ df_spread_dim <- spread(df_final_DIM, key = "DIM", value = REGISTERS)
 df_final_sexo <- df_final %>%
                        group_by(DATETIME,SEXO) %>%
                        summarise(REGISTERS = sum(REGISTERS))
-  
+
+df_spread_sexo <- spread(df_final_sexo, key = "SEXO", value = REGISTERS)
+
+head(df_spread_sexo)
   
 ###Join two tables
   
@@ -383,9 +398,10 @@ df_final_hom <- df_spread_edad_fixed
   
 #Unimos el previo con la tabla DIM
   
-df_final_hom <- left_join(df_final_hom, df_spread_dim)
-  
-  
+#df_final_hom <- left_join(df_final_hom, df_spread_dim)
+
+df_final_hom <- left_join(df_final_homicidios, df_spread_sexo)  
+
 ##Dataset final
   
 head(df_final_hom)
@@ -524,8 +540,7 @@ joined_data <- filter(joined_data, DATETIME > "2003-12-01")
 
 pca_dataset <- dplyr::select(joined_data %>%
                              ungroup (),
-                             -c(DATETIME, Adulto, No_adulto, Hombre_Adulto,
-                             Hombre_No_adulto, Mujer_Adulto, Mujer_No_adulto,
+                             -c(DATETIME, total_hom , Hombre, Mujer,
                              lesiones, asesinato, robo, asalto, homicidio,
                              "arma de fuego", violación, cadáver,
                              agresor, desaparecida
@@ -609,15 +624,12 @@ fviz_eig(ACP, addlabels=TRUE, hjust = -0.3)
 pca_dataset_results <- as.data.frame(ACP$x) 
 
 
-data_model <- as.data.frame(cbind(joined_data$DATETIME, joined_data$Adulto, joined_data$No_adulto,
-                                  joined_data$Hombre_Adulto, joined_data$Hombre_No_adulto,
-                                  joined_data$Mujer_Adulto, joined_data$Mujer_No_adulto,
-                                  pca_dataset_results$PC1
+data_model <- as.data.frame(cbind(joined_data$DATETIME, joined_data$total_hom, joined_data$Hombre,
+                                  joined_data$Mujer, pca_dataset_results$PC1
                                   ))
 
 
-colnames(data_model) <- c("datetime", "Adulto", "No_adulto", "Hombre_Adulto", "Hombre_No_adulto", 
-                          "Mujer_Adulto", "Mujer_No_adulto", "PC1")
+colnames(data_model) <- c("datetime", "total_hom", "hombre", "mujer", "PC1")
 
 head(data_model)
 
@@ -631,40 +643,37 @@ str(data_model)
 
 #convert to time series
 
-adulto_hom_var <- ts(data_model$Adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
-no_adulto_hom_var <- ts(data_model$No_adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
-hombre_no_adulto_hom_var <- ts(data_model$Hombre_No_adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
-hombre_adulto_hom_var <- ts(data_model$Hombre_Adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
-mujer_no_adulto_hom_var <- ts(data_model$Mujer_No_adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
-mujer_adulto_hom_var <- ts(data_model$Mujer_Adulto, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
+total_hom_var <- ts(data_model$total_hom, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
+hombre_hom_var <- ts(data_model$hombre, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
+mujer_hom_var <- ts(data_model$mujer, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
 pc1_google_var <- ts(data_model$PC1, start = c(2004,1,1), end = c(2022,12,1), frequency = 12)
 
 
 ###Diferenciar las variables para que sean estacionarias
 
-adulto_hom_Var_log <- log(adulto_hom_var)
-ndiffs(adulto_hom_Var_log) #1 vez
-d_adulto_hom_Var_log <- diff(adulto_hom_Var_log,lag = 1)
+#adulto_hom_Var_log <- log(adulto_hom_var)
+#ndiffs(adulto_hom_Var_log) #1 vez
+#d_adulto_hom_Var_log <- diff(adulto_hom_Var_log,lag = 1)
 
-no_adulto_hom_var_log <- log(no_adulto_hom_var)
-ndiffs(no_adulto_hom_var_log) #1 vez
-d_no_adulto_hom_var_log <- diff(no_adulto_hom_var_log, lag = 1)
+#no_adulto_hom_var_log <- log(no_adulto_hom_var)
+#ndiffs(no_adulto_hom_var_log) #1 vez
+#d_no_adulto_hom_var_log <- diff(no_adulto_hom_var_log, lag = 1)
 
-hombre_no_adulto_hom_var_log <- log(hombre_no_adulto_hom_var)
-ndiffs(hombre_no_adulto_hom_var_log) #1 vez
-d_hombre_no_adulto_hom_var_log <-diff(hombre_no_adulto_hom_var_log, lag = 1)
+#hombre_no_adulto_hom_var_log <- log(hombre_no_adulto_hom_var)
+#ndiffs(hombre_no_adulto_hom_var_log) #1 vez
+#d_hombre_no_adulto_hom_var_log <-diff(hombre_no_adulto_hom_var_log, lag = 1)
 
-hombre_adulto_hom_var_log <- log(hombre_adulto_hom_var)
-ndiffs(hombre_adulto_hom_var_log) #1 vez
-d_hombre_adulto_hom_var_log <- diff(hombre_adulto_hom_var_log, lag = 1)
+#hombre_adulto_hom_var_log <- log(hombre_adulto_hom_var)
+#ndiffs(hombre_adulto_hom_var_log) #1 vez
+#d_hombre_adulto_hom_var_log <- diff(hombre_adulto_hom_var_log, lag = 1)
 
-mujer_no_adulto_hom_var_log <- log(mujer_no_adulto_hom_var)
-ndiffs(mujer_no_adulto_hom_var_log)
-d_mujer_no_adulto_hom_var_log <- diff(mujer_no_adulto_hom_var_log, lag = 1)
+#mujer_no_adulto_hom_var_log <- log(mujer_no_adulto_hom_var)
+#ndiffs(mujer_no_adulto_hom_var_log)
+#d_mujer_no_adulto_hom_var_log <- diff(mujer_no_adulto_hom_var_log, lag = 1)
 
-mujer_adulto_hom_var_log <- log(mujer_adulto_hom_var)
-ndiffs(mujer_adulto_hom_var_log)
-d_mujer_adulto_hom_var_log <- diff(mujer_adulto_hom_var_log, lag = 1)
+#mujer_adulto_hom_var_log <- log(mujer_adulto_hom_var)
+#ndiffs(mujer_adulto_hom_var_log)
+#d_mujer_adulto_hom_var_log <- diff(mujer_adulto_hom_var_log, lag = 1)
 
 #la variable no se hizo log porque da nas
 ndiffs(pc1_google_var)
@@ -672,36 +681,105 @@ d_pc1_google_var <- diff(pc1_google_var, lag = 1)
 
 
 
-plot(cbind(d_adulto_hom_Var_log,d_no_adulto_hom_var_log,d_hombre_no_adulto_hom_var_log,
-           d_hombre_adulto_hom_var_log, d_mujer_no_adulto_hom_var_log, d_mujer_no_adulto_hom_var_log,
-           d_mujer_adulto_hom_var_log, d_pc1_google_var))
-
 ##Prueba de causalidad
 
-var_model <- cbind(d_adulto_hom_Var_log,d_no_adulto_hom_var_log,d_hombre_no_adulto_hom_var_log,
-                   d_hombre_adulto_hom_var_log, d_mujer_no_adulto_hom_var_log, 
-                   d_mujer_adulto_hom_var_log, d_pc1_google_var)
+var_model <- cbind(total_hom_var, mujer_hom_var, hombre_hom_var,  pc1_google_var)
+colnames(var_model) <- c("total_hom_var", "mujer_hom_var", "hombre_hom_var", "pc1_google_var")
 
-#var_model <- cbind(d_mujer_adulto_hom_var_log, d_pc1_google_var)
+#var_model_hom_total <- cbind(total_hom_var, pc1_google_var)
+#colnames(var_model_hom_total) <- c("total_hom_var", "pc1_google_var")
+
+###Normality
+
+qqnorm(var_model[,1])
+qqline(var_model[,1])
+plot(var_model[,1])
+mean(var_model[,1])
+
+##Primera variable
+
+par(mfrow = c(2, 2))
+
+qqnorm(var_model[,1], main = "Serie original")
+qqline(var_model[,1])
+
+qqnorm(log(var_model[,1]), main = "Log")
+qqline(log(var_model[,1]))
+
+qqnorm(diff(var_model[,1]),lag = 1, main = "1 dif")
+qqline(diff(var_model[,1]),lag = 1)
+
+qqnorm(diff(log(var_model[,1])),lag = 1, main = "1 dif and log")
+qqline(diff(log(var_model[,1])),lag = 1)
+
+##cuarta variable google
 
 
+par(mfrow = c(2, 2))
 
-colnames(var_model) <- c("d_adulto_hom_Var_log", "d_no_adulto_hom_var_log", "d_hombre_no_adulto_hom_var_log",
-                          "d_hombre_adulto_hom_var_log", "d_mujer_no_adulto_hom_var_log", 
-                          "d_mujer_adulto_hom_var_log", "d_pc1_google_var")
+qqnorm(var_model[,4], main = "Serie original")
+qqline(var_model[,4])
 
-summary(var_model)
+qqnorm(log(var_model[,4]), main = "Log")
+qqline(log(var_model[,4]))
+
+qqnorm(diff(var_model[,4]),lag = 1, main = "1 dif")
+qqline(diff(var_model[,4]),lag = 1)
+
+qqnorm(diff(log(var_model[,4])),lag = 1, main = "1 dif and log")
+qqline(diff(log(var_model[,4])),lag = 1)
+
+#write.csv(var_model, "var_model.csv")
 
 ###Preguntar al profe prueba de granger
 
+#Cargar archivo
+
+#var_model <- read.csv("var_model.csv")
+
 ###PROCESO VAR
+
+#Estacionalidad
+
+adf_homicidios_total <- adf.test(var_model[,1])
+adf_pc1_google <- adf.test(var_model[,4])
+adf_pc1_google
+
+##Diferenciamos las series
+
+diff_homicidios <- diff(var_model[,1], lag = 1)
+adf.test(diff_homicidios)
+plot(diff_homicidios)
+
+diff_mujer_homicidios <- diff(var_model[,2], lag = 1)
+adf.test(diff_mujer_homicidios)
+plot(diff_mujer_homicidios)
+
+diff_hombre_homicidios <- diff(var_model[,3], lag = 1)
+adf.test(diff_hombre_homicidios)
+plot(diff_hombre_homicidios)
+
+diff_pc1_google <- diff(var_model[,4], lag = 1)
+adf.test(diff_pc1_google)
+plot(diff_pc1_google)
+
+var_model_diff <- cbind(diff_homicidios, diff_mujer_homicidios, diff_hombre_homicidios, diff_pc1_google )
+colnames(var_model_diff) <- c("diff_homicidios", "diff_mujer_homicidios", "diff_hombre_homicidios", "diff_pc1_google")
+
+##box cox
+
+#var_model_lambda <- BoxCox.lambda(var_model)
+
+#var_model_box <- BoxCox(var_model, var_model_lambda)
 
 #Lags del modelo
 
-lagselect <- VARselect(var_model, lag.max = 15)
-lagselect$selection #10
+###Seleccionamos la variable de homicidios y el pca de google trends
 
-##Escogemos 3 lags en el modelo
+lagselect <- VARselect(var_model_diff, lag.max = 15)
+lagselect$selection
+#AIC(n)  HQ(n)  SC(n) FPE(n) 
+#    6      6      6     15 
 
 ##Estamos cumpliendo con la condicion de estabilidad, tenemos el numero correcto de regazgos
 
@@ -709,12 +787,43 @@ lagselect$selection #10
 
 #14 ok
 
-#15 salio bien y con una diferencia
+#Revisión gráfica de homicidios y google trends
 
-modelo1 <- VAR(var_model[,3:6], p = 15, type = c("trend"), exogen = var_model[,7])
-modelo1
-summary(modelo1)
-#plot(modelo1)
+#Creación de modelo con homicidios y google trends con 10 rezagos
+  
+estimado <- VAR(var_model_diff[,c(1,4)], p = 10, type = c("both"), exogen =NULL, lag.max = NULL,
+                  season = 12)
+coef(estimado)
+estimado_residuals <- residuals(estimado)
+summary(estimado)
+
+par(mfrow = c(1, 1))
+hist(estimado_residuals, main = "histograma residuos")
+
+##Raices
+
+roots(estimado, modulus = TRUE) #raíces
+
+#Prueba autocorrelación residuales Portmanteau Test (asymptotic) con 4 rezagos
+
+ser11 <- serial.test(estimado, lags.pt =15, type = "PT.asymptotic")
+ser11
+
+#Prueba normalidad
+
+norm1 <- normality.test(estimado, multivariate.only = TRUE)
+norm1$jb.mul
+
+##Prueba homocedasticidad varianza de los residuales
+
+arch1 <- arch.test(estimado, lags.multi = 15)
+arch1$arch.mul
+
+
+qqnorm(resid(estimado))
+qqline(resid(estimado))
+
+
 
 coef(modelo1)
 residuals(modelo1)
@@ -732,13 +841,13 @@ residual_analysis$serial
 
 ##Normalidad de los residuales
 
-norm1 <- normality.test(modelo1)
+norm1 <- normality.test(modelo1, multivariate.only = TRUE)
 norm1$jb.mul #los valores tienen que ser mayores que alfa
 
 
 ##Prueba homocedasticidad varianza de los residuales
 
-arch1 <- arch.test(modelo1, lags.multi = 15)
+arch1 <- arch.test(estimado, lags.multi = 15)
 arch1$arch.mul
 
 
@@ -759,51 +868,3 @@ norm1$jb.mul #los valores tienen que ser mayores que alfa
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-y_data_model = data_model[1:228,4:8]
-attach(y_data_model)
-head(y_data_model)
-
-#falta parametro, check datos mensuales
-estimado=VAR(y_data_model, p = 3, type = c("const"), exogen = NULL, lag.max = 12,
-             ic = c("AIC", "HQ", "SC", "FPE"))
-estimado
-coef(estimado) # buscar significancia a traves de la t de student
-residuals(estimado)
-modelo1 <- summary(estimado)
-modelo1 #modelo puedo ver que cof son sig
-modelo1$roots #todos deben ser menores q 1
-
-
-##resudiales supuestos ruido blancy y normales
-
-ser11 <- serial.test(estimado, lags.pt = 12, type = "PT.asymptotic")
-ser11 #p valor mayor que alfa
-norm1 <- normality.test(estimado)
-norm1$jb.mul #los valores tienen que ser mayores que alfa
-
-yf=predict(estimado, n.ahead = 11, ci = 0.95, dumvar = NULL)
-yf
-
-
-fanchart(yf, col =c("red","red1","red2","red3","red4"), cis = NULL, names = c("MM"), 
-         main = c("Forecast"), ylab ="var", 
-         xlab = "número de observación", col.y = "red", nc=1, plot.type = c("multiple",
-                                                                            "single"), mar = par("mar"), oma = par("oma"))
-
-
-plot(y_model_adulto$adulto, type = "l")
-
-head(y_model_adulto)
