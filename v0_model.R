@@ -265,6 +265,9 @@ mi_matriz[2, column2] <- 1
 var1_restrict <- restrict(estimado, method ="man", resmat = mi_matriz)
 var1_restrict$varresult$pc1_google_var
 
+
+summary(var1_restrict)
+
 ##Heterocedasticidad
 
 
@@ -291,5 +294,57 @@ fanchart(yf, col =c("red","red1","red2","red3","red4"), cis = NULL, names = c("t
          xlab = "número de observación", col.y = "red", nc=1, plot.type = c("multiple",
                                                                             "single"), mar = par("mar"), oma = par("oma"))
 
+####Modelo 2
 
-yf$exo.fcst
+lagselect <- VARselect(var_model_subset[,2:4], lag.max = 35)
+lagselect$selection
+
+#30
+
+model_lags = 5
+estimado1 <- VAR(var_model_subset[,2:4], p = model_lags, type = c("both"), exogen =NULL, lag.max = NULL,
+                season = 12)
+
+coef(estimado1)
+estimado1_residuals <- residuals(estimado1)
+summary_estimado1 <- summary(estimado1)
+plot(residuals(summary_estimado1))
+
+##Raices
+
+roots(estimado1, modulus = TRUE) #raíces
+
+#Prueba autocorrelación residuales Portmanteau Test (asymptotic) con 4 rezagos
+
+ser11_dif <- serial.test(estimado1, lags.pt = 6, type = "PT.asymptotic")
+ser11_dif
+
+#Prueba normalidad
+
+norm1_dif <- normality.test(estimado_dif, multivariate.only = TRUE)
+norm1$jb.mul
+
+###Var restricted
+
+dim(estimado1$varresult$hombre_hom_var$model)
+##29 columnas
+
+# Crear una matriz de 3 filas y 29 columnas con ceros
+mi_matriz_v1 <- matrix(0, nrow = 3, ncol = 28)
+
+# Columnas especificadas V1
+
+column1v1 <- c(2)
+column2v1 <- c(2, 5, 8)
+column3v1 <- c(2, 3, 6, 13)
+
+# Agregar valores 1 a las columnas especificadas
+mi_matriz_v1[1, column1v1] <- 1
+mi_matriz_v1[2, column2v1] <- 1
+mi_matriz_v1[3, column3v1] <- 1
+
+mi_matriz_v1
+
+var1_restrictv1 <- restrict(estimado1, method ="man", resmat = mi_matriz_v1)
+
+var1_restrictv1
