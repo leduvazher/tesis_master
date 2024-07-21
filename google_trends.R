@@ -7,10 +7,12 @@ library("dplyr")
 ###Variable: homicidios
 
 
-homicidios <- gtrends(keyword = c("muerto","mato", "muertes", "narcotrafico", "metanfetamilo"), time = "all", geo="MX", Sys.sleep(10))
-df_homicidios <- homicidios$interest_over_time
-df_homicidios %>% distinct(keyword)
-write.csv(df_homicidios, "df_homicidios.csv")
+homicidios_1_paper <- gtrends(keyword = c("denunciar","denuncia", "homidicio", "lesiones", "robo"), time = "all", geo="MX", Sys.sleep(20))
+df_homicidios_1_paper <- homicidios$interest_over_time
+df_homicidios_1_paper %>% distinct(keyword)
+write.csv(df_homicidios, "df_homicidios_paper_1.csv")
+
+#asalto, violacion, asesinato
 
 ###Variable: homicidios adulto
 

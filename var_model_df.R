@@ -116,9 +116,6 @@ data_model <- data_model %>%
 
 str(data_model)
 
-write.csv(data_model, "data_model.csv", row.names = FALSE)
-
-
 #####Data model####
 
 #convert to time series
@@ -134,8 +131,6 @@ str(var_model)
 
 plot(var_model[,1])
 
-write.csv(var_model[,0:4], "var_model_dataset.csv")
-
 # Especificar el período de tiempo que deseas filtrar
 start_date <- c(2010,1)
 end_date <-   c(2022,12)
@@ -149,8 +144,9 @@ var_model_subset <- window(var_model, start = start_date, end = end_date)
 lagselect <- VARselect(var_model_subset[,c(1,4)], lag.max = 35)
 lagselect$selection
 
+
 model_lags = 24 
-#model_lags = c(1,2,3,6,8,12,13, 18,24)
+model_lags = c(1,2,3,6,8,12,13, 18,24)
 estimado <- VAR(var_model_subset[,c(1,4)], p = model_lags, type = c("both"), exogen =NULL, lag.max = NULL,
                 season = 12)
 
@@ -169,8 +165,6 @@ roots(estimado, modulus = TRUE) #raíces
 
 ser11 <- serial.test(estimado, lags.pt =48, type = "PT.asymptotic")
 ser11
-
-plot(serial.test(estimado))
 
 #Prueba normalidad
 
@@ -199,7 +193,6 @@ plot(diff_pc1_google)
 
 var_model_diff <- cbind(diff_homicidios, diff_mujer_homicidios, diff_hombre_homicidios, diff_pc1_google )
 colnames(var_model_diff) <- c("diff_homicidios", "diff_mujer_homicidios", "diff_hombre_homicidios", "diff_pc1_google")
-
 
 
 ###
@@ -242,164 +235,4 @@ ser11_dif
 norm1_dif <- normality.test(estimado_dif, multivariate.only = TRUE)
 norm1$jb.mul
 
-####################################
-
-
-###Seleccionamos la variable de homicidios y el pca de google trends
-
-lagselect <- VARselect(var_model_subset[,c(1,4)], lag.max = 35)
-lagselect$selection
-
-
-model_lags = 24 
-#model_lags = c(1,2,3,6,8,12,13, 18,24)
-estimado <- VAR(var_model_subset[,c(1,4)], p = max(model_lags), type = c("both"), exogen =NULL, lag.max = NULL,
-                season = 12)
-
-# Crear una matriz de 2 filas y 61 columnas con ceros
-mi_matriz <- matrix(0, nrow = 2, ncol = 61)
-
-# Columnas especificadas
-column1 <- c(1, 5, 39)
-column2 <- c(2, 4, 16, 23, 24)
-
-# Agregar valores 1 a las columnas especificadas
-mi_matriz[1, column1] <- 1
-mi_matriz[2, column2] <- 1
-
-
-var1_restrict <- restrict(estimado, method ="man", resmat = mi_matriz)
-var1_restrict$varresult$pc1_google_var
-
-
-summary(var1_restrict)
-
-##Heterocedasticidad
-
-
-
-ser11_dif <- serial.test(var1_restrict, lags.pt = 69, type = "PT.asymptotic")
-ser11_dif
-
-
-
-##Normalidad
-
-norm1_dif <- normality.test(var1_restrict, multivariate.only = TRUE)
-norm1$jb.mul
-
-##
-
-yf=predict(var1_restrict, n.ahead = 11, ci = 0.95, dumvar = NULL)
-yf
-
-###
-
-fanchart(yf, col =c("red","red1","red2","red3","red4"), cis = NULL, names = c("total_hom_var"), 
-         main = c("Forecast"), ylab ="var", 
-         xlab = "número de observación", col.y = "red", nc=1, plot.type = c("multiple",
-                                                                            "single"), mar = par("mar"), oma = par("oma"))
-
-####Modelo 2
-
-lagselect1 <- VARselect(var_model_subset[,2:4], lag.max = 35)
-lagselect1$selection
-
-#5
-
-model_lags1 = 30
-estimado1 <- VAR(var_model_subset[,2:4], p = model_lags1, type = c("both"), exogen =NULL, lag.max = NULL,
-                season = 12)
-
-coef(estimado1)
-estimado1_residuals <- residuals(estimado1)
-summary_estimado1 <- summary(estimado1)
-summary_estimado1
-
-##Raices
-
-roots(estimado1, modulus = TRUE) #raíces
-
-#Prueba autocorrelación residuales Portmanteau Test (asymptotic) con 4 rezagos
-
-ser11_dif <- serial.test(estimado1, lags.pt = 55, type = "PT.asymptotic")
-ser11_dif
-
-#Prueba normalidad
-
-norm1_dif_2 <- normality.test(estimado1, multivariate.only = TRUE)
-norm1_dif_2$jb.mul
-
-###Var restricted
-
-dim(estimado1$varresult$hombre_hom_var$model)
-##29 columnas
-
-# Crear una matriz de 3 filas y 29 columnas con ceros
-mi_matriz_v1 <- matrix(0, nrow = 3, ncol = 28)
-
-# Columnas especificadas V1
-
-column1v1 <- c(2)
-column2v1 <- c(2, 5, 8)
-column3v1 <- c(2, 3, 6, 13)
-
-# Agregar valores 1 a las columnas especificadas
-mi_matriz_v1[1, column1v1] <- 1
-mi_matriz_v1[2, column2v1] <- 1
-mi_matriz_v1[3, column3v1] <- 1
-
-mi_matriz_v1
-
-var1_restrictv1 <- restrict(estimado1, method ="man", resmat = mi_matriz_v1)
-
-summary(var1_restrictv1)
-
-
-#######################
-
-###Modelo 3 - Var con google Trends desde 2004
-
-
-# Especificar el período de tiempo que deseas filtrar
-start_date2 <- c(2010,1)
-end_date2 <-   c(2022,12)
-
-var_model_subset_2 <- window(var_model, start = start_date2, end = end_date2)
-
-
-#Lags del modelo
-
-###Seleccionamos la variable de homicidios y el pca de google trends
-
-lagselect_dif_2 <- VARselect(var_model_subset_2[,c(2:4)], lag.max = 30)
-lagselect_dif_2$selection
-
-#2
-
-model_lags = 5
-estimado_2 <- VAR(var_model_subset_2[,c(2:4)], p = model_lags, type = c("both"), exogen =NULL, lag.max = NULL,
-                    season = 12)
-
-coef(estimado_2)
-estimado_residuals_2 <- residuals(estimado_2)
-summary(estimado_2)
-
-par(mfrow = c(1, 1))
-hist(estimado_residuals_2, main = "histograma residuos")
-
-##Raices
-
-roots(estimado_2, modulus = TRUE) #raíces
-
-#Prueba autocorrelación residuales Portmanteau Test (asymptotic) con 4 rezagos
-
-ser11_dif_2 <- serial.test(estimado_2, lags.pt = 10, type = "PT.asymptotic")
-ser11_dif_2
-
-#Prueba normalidad
-
-norm1_2 <- normality.test(estimado_2, multivariate.only = TRUE)
-norm1_2$jb.mul
-
-
+plot(estimado)

@@ -134,6 +134,10 @@ model_lags_v1 = 28
 estimado_v1 <- VAR(var_model_subset_v1[,c(2:4)], p = model_lags_v1, type = c("both"), exogen =NULL, lag.max = NULL,
                 season = 12)
 
+summary(estimado_v1)
+AIC(estimado_v3)
+BIC(estimado_v3)
+
 ##Heterocedasticidad
 
 ser11_dif_v1 <- serial.test(estimado_v1, lags.pt = 75, type = "PT.asymptotic")
