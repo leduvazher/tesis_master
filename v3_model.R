@@ -350,9 +350,14 @@ var_model_subset_v4 <- window(var_model, start = start_date_v4, end = end_date_v
 estimado_v4 <- auto.arima(var_model_subset_v4[,2])
 estimado_v4
 
+summary(estimado_v4)
+checkresiduals(estimado_v4)
+
 yf_v4=forecast(estimado_v4, h = 48)
-autoplot(yf_v4)
+autoplot(yf_v4, series = "arima")
 yf_v4$mean
+
+
 
 ##Autoarima mujeres + GT
 
@@ -361,10 +366,89 @@ end_date_v5 <-   c(2018,12)
 
 var_model_subset_v5 <- window(var_model, start = start_date_v5, end = end_date_v5)
 
-estimado_v5 <- auto.arima(var_model_subset_v5[,2], xreg = var_model_subset_v5[,4])
+start_date_v5_1 <- c(2006,1)
+end_date_v5_1 <- c(2022,12)
+
+#future_val_gt5_subset <- window(var_model[,4], start = start_date_v5_1, end = end_date_v5_1)
+future_val_gt5_subset <- var_model_subset_v5[,4]
+
+length(var_model_subset_v5[,4])
+length(var_model_subset_v5[,2])
+
+
+start_date_v5_2 <- c(2019,1)
+end_date_v5_2 <- c(2022,12)
+forecast_gt <- window(var_model[,4], start = start_date_v5_2, end = end_date_v5_2)
+
+
+
+future_val_gt5 <- as.matrix(future_val_gt5_subset)
+
+length(future_val_gt5)
+
+estimado_v5 <- auto.arima(var_model_subset_v5[,2], xreg = future_val_gt5)
 estimado_v5
 
-yf_v5 = forecast(estimado_v5, h = 12)
+yf_v5 = forecast(estimado_v5, h = 48, xreg = forecast_gt)
+
+autoplot(yf_v5)
+
+
+
+##Autoarima hombres
+
+#2. ARIMA + GT
+#3. VAR
+#4. VAR+GT
+
+
+start_date_v4 <- c(2006,1)
+end_date_v4 <-   c(2018,12)
+
+var_model_subset_v4 <- window(var_model, start = start_date_v4, end = end_date_v4)
+
+estimado_v4_hombres <- auto.arima(var_model_subset_v4[,3])
+estimado_v4_hombres
+
+summary(estimado_v4_hombres)
+checkresiduals(estimado_v4_hombres)
+
+yf_v4_hombres=forecast(estimado_v4_hombres, h = 48)
+autoplot(yf_v4_hombres, series = "arima")
+yf_v4_hombres$mean
+
+
+
+##Autoarima hombres + GT
+
+start_date_v5 <- c(2006,1)
+end_date_v5 <-   c(2018,12)
+
+var_model_subset_v5 <- window(var_model, start = start_date_v5, end = end_date_v5)
+
+start_date_v5_1 <- c(2006,1)
+end_date_v5_1 <- c(2022,12)
+
+#future_val_gt5_subset <- window(var_model[,4], start = start_date_v5_1, end = end_date_v5_1)
+future_val_gt5_subset <- var_model_subset_v5[,4]
+
+length(var_model_subset_v5[,4])
+length(var_model_subset_v5[,2])
+
+
+start_date_v5_2 <- c(2019,1)
+end_date_v5_2 <- c(2022,12)
+forecast_gt <- window(var_model[,4], start = start_date_v5_2, end = end_date_v5_2)
+future_val_gt5 <- as.matrix(future_val_gt5_subset)
+
+length(future_val_gt5)
+
+estimado_v5_hombres <- auto.arima(var_model_subset_v5[,3], xreg = future_val_gt5)
+estimado_v5_hombres
+
+yf_v5_hombres = forecast(estimado_v5_hombres, h = 48, xreg = forecast_gt)
+
+autoplot(yf_v5_hombres)
 
 #### Mujeres
 
@@ -420,22 +504,35 @@ fit_v4ts <- ts(fit_v4, start = c(2019, 1), frequency = 12)
 
 modelo7_accuracy_muj <- accuracy(fit_v4ts, mujeres_test)
 
+##Octava comparación
+
+fit_v5 <- yf_v5$mean
+fit_v5ts <- ts(fit_v5, start = c(2019, 1), frequency = 12)
+
+modelo8_accuracy_muj <- accuracy(fit_v5ts, mujeres_test)
+
+
 
 ##Resultados mujeres
 
-resultados_modelos_mujeres <-rbind(modelo1_accuracy_muj, modelo2_accuracy_muj,
-                                   modelo3_accuracy_muj, modelo1_rest_accuracy_muj,
-                                   modelo2_rest_accuracy_muj, modelo3_rest_accuracy_muj,
-                                   modelo7_accuracy_muj)
+resultados_modelos_mujeres <-rbind(modelo2_accuracy_muj,
+                                   modelo3_accuracy_muj, 
+                                   modelo7_accuracy_muj, 
+                                   modelo8_accuracy_muj)
+
+row.names(resultados_modelos_mujeres) <- c("Model 2", "Model 3", "Model 7", "Model 8")
+
+resultados_modelos_mujeres
 
 write.csv(resultados_modelos_mujeres, "resultados_modelos_mujeres.csv", row.names = FALSE)
 
 ###Plot mujeres
 
 autoplot(window(var_model[,2], start = c(2006,1), frequency = 12), ylab = "Homicidios mujeres") +
-  autolayer(fit_v1ts, series = "V1 model") +
   autolayer(fit_v2ts, series = "V2 model") + 
-  autolayer(fit_v3ts, series = "V3 model") 
+  autolayer(fit_v3ts, series = "V3 model") +
+  autolayer(fit_v4ts, series = "arima") +
+  autolayer(fit_v5ts, series = "arima + gt")
 
 
 autoplot(window(var_model[,2], start = c(2006,1), frequency = 12), ylab = "Homicidios mujeres") +
@@ -489,10 +586,28 @@ fit_v3ts_hombres_restricted <- ts(fit_v3_hombres_restricted, start = c(2019, 1),
 
 modelo3_rest_accuracy_hom <- accuracy(fit_v3ts_hombres_restricted,hombres_test)
 
+##Septima comparacion
 
-resultados_modelos_hombres <- rbind(modelo1_accuracy_hom, modelo2_accuracy_hom,
-                                    modelo3_accuracy_hom, modelo1_rest_accuracy_hom,
-                                    modelo2_rest_accuracy_hom, modelo3_rest_accuracy_hom)
+fit_v4_hombres <- yf_v4_hombres$mean
+fit_v4ts_hombres <- ts(fit_v4_hombres, start = c(2019, 1), frequency = 12)
+
+modelo7_accuracy_hom <- accuracy(fit_v4ts_hombres, hombres_test)
+
+##Octava comparación
+
+fit_v5_hombres <- yf_v5_hombres$mean
+fit_v5ts_hombres <- ts(fit_v5_hombres, start = c(2019, 1), frequency = 12)
+
+modelo8_accuracy_hom <- accuracy(fit_v5ts_hombres, hombres_test)
+
+
+
+resultados_modelos_hombres <- rbind(modelo2_accuracy_hom,
+                                    modelo3_accuracy_hom, 
+                                    modelo7_accuracy_hom, 
+                                    modelo8_accuracy_hom)
+
+row.names(resultados_modelos_hombres) <- c("Model 2", "Model 3", "Model 7", "Model 8")
 
 resultados_modelos_hombres
 
