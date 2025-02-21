@@ -1,0 +1,245 @@
+```{r}
+#| echo: false
+library(ggplot2)
+library(plotly)
+```
+
+---
+title: "Comparison of univariates and multivariates forecasts of homicides in Mexico with and without Google Trends data"
+author: "Eduardo Vazquez"
+format: 
+  revealjs:
+    css: style.css  
+    theme: simple
+    title-slide-attributes:
+      data-background-image: justicia.jpg
+      data-background-size: cover
+    header-includes:
+      - '<style>.reveal h1 {color: #000;}</style>'
+---
+
+## Introduction {#intro}
+
+-   **Context**: National homicide rates in Mexico have tripled since 1990. Violence generates significant social disruptions. To effectively address this issue, it is essential to shift from a reactive approach to a proactive one, leveraging forecasting techniques to inform strategy and prevention efforts.
+
+-   **Objective**: Comparing forecasting strategies to predict national homicide rates by sex, using Google Trends data.
+
+## Research Context {#research_context}
+
+<section>
+
+-   Homicides are among the top causes of death in Mexico.
+-   The rate increased from 8.1 per 100,000 in 1990 to 25 in 2020.
+
+```{r}
+
+datos <- read.csv("graph_introduction.csv")
+
+# Convertir la columna 'year' a formato de fecha y renombrarla como 'year_date'
+datos <- datos %>%
+  mutate(year_date = as.Date(paste0(year_date, "-01-01")))  # Agregar "-01-01" para convertirlo en una fecha válida
+
+# Filtrar los datos para que solo incluyan los años desde 1990 hasta 2020
+datos_filtrados <- datos %>%
+  filter(year_date >= as.Date("1990-01-01") & year_date <= as.Date("2020-12-31"))
+
+
+homicide_rate_graph <- ggplot(datos_filtrados, aes(x = year_date, y = homicide_rate)) +
+  geom_line(color = "#4AA4DE") +  # Línea azul
+  geom_point(color = "#1F65CC") +  # Puntos rojos
+  labs(title = "Homicide Rate per Year (per 100k people)",
+       x = "Year",
+       y = "Homicide Rate") +  # Título y etiquetas de los ejes
+  scale_x_date(date_labels = "%Y", 
+               date_breaks = "1 year") +  # Formato y saltos del eje X
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggplotly(p = homicide_rate_graph, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
+
+```
+
+</section>
+
+<section>
+
+::::: columns
+::: {.column width="60%"}
+According to Mexico Unido Contra la Delincuencia (2024)
+
+-   Five municipalities (Tijuana, Juárez, León, Acapulco de Juárez, and Celaya) accounted for 18% of the country's total violence and rank among the most dangerous in the world.
+
+-   71% of homicides in Mexico involve firearms, a rate above 60% for 15 years (73% for men and 61% for women in 2023)
+
+-   Of 21,927 firearm homicides in 2023, the weapon type is known for only 1.1% of cases, with no data for the remaining 98.9%.
+:::
+
+::: {.column width="40%"}
+\
+![](images/tijuana_research_context-02.png){width="400" height="500"}
+:::
+:::::
+
+</section>
+
+------------------------------------------------------------------------
+
+## Literature Review {#literature_review}
+
+<section>
+
+The literature on homicide forecasting is still developing, with limited studies compared to other crime forecasting areas. While some models exist, research remains fragmented, and there is room for improvement in data sources and methodologies.
+
+| Author | Methodology | Findings | Scope |
+|------------------|-------------------|------------------|------------------|
+| Ramallo et al. (2023) | Dynamic Factor Model (DFM) | Improved homicide forecasting with multiple data sources. | International (USA) |
+| Santos-Marquez (2021) | ETS, ARIMA, beta-convergence models | Found STAR and beta-convergence models most accurate. | International (Colombia) |
+| Swedo et al. (2023) | Ensemble model with Google Trends | Reduced homicide reporting lag. | International (USA) |
+| Calvo et al. (2017) | CR-Ω+ model integrating clustering and optimization | Enhanced patrol effectiveness in crime prediction. | National (Mexico) |
+| García-Gómez et al. (2022) | Bayesian Ridge & SVR | Effective homicide forecasting in Mexico. | National (Mexico) |
+| Gress et al. (2023) | Descriptive statistics & hypothesis testing | Identified increasing feminicide trends. | National (Mexico) |
+| Piña-García & Ramírez-Ramírez (2019) | ARIMA with Google Trends & Twitter | Crime predictions enhanced using search data. | National (Mexico) |
+
+</section>
+
+<section>
+
+Number of Crime Forecasting Academic Studies
+
+```{r}
+
+# Carga el dataframe
+df <- read.csv("publications_crime.csv")
+
+# Si la columna "published_year" está en formato caracter, conviértela a numérico
+df$published_year <- as.numeric(df$published_year)
+
+# Crea la gráfica de barras
+publications_crime_graph <- ggplot(df, aes(x = factor(published_year), y = articles)) +
+  geom_col(fill = "#4AA4DE") +
+  labs(title = "Crime forecasting academic studies", x = "Published year", y = "Articles") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+
+ggplotly(p = publications_crime_graph, width = 1000, height = 550) 
+```
+
+</section>
+
+------------------------------------------------------------------------
+
+## Data Sources {#data_sources}
+
+::::: columns
+::: {.column width="60%"}
+-   **INEGI Homicide Data (1990-2020)**
+      -   Monthly aggregation (2004-2020)
+      -   Demographic and geographical details
+-   **Google Trends API**
+    -   Provides access to a largely unfiltered sample of actual search requests made to Google
+    -   The resulting numbers are then scaled on a range of 0 to 100 based on a topic’s proportion to all searches on all topic
+:::
+
+::: {.column width="40%"}
+![](INEGI.png){width="291"}
+
+![](google_trends_logo.png){width="362"}
+:::
+:::::
+
+------------------------------------------------------------------------
+
+
+
+------------------------------------------------------------------------
+
+## Estimation Strategy
+
+1.  **Extraction**: Retrieve data from INEGI and Google Trends.
+2.  **Transformation**: Clean and structure the data.
+3.  **Modeling**:
+    -   PCA on Google Trends data
+    -   ARIMA & VAR models estimation
+    -   Forecast generation and accuracy assessment
+
+------------------------------------------------------------------------
+
+## Exploratory Analysis
+
+-   **Homicide Trends** (2006-2021)
+    -   Government security policy shifts affecting trends
+    -   Unexpected decline in 2020
+-   **PCA Results**
+    -   Selected terms explain 71.2% of variance
+
+------------------------------------------------------------------------
+
+## ARIMA Models
+
+-   **Female Homicides**: $$ (1-B)Y_t = \theta(B)\epsilon_t $$
+    -   Best model: ARIMA(0,1,1)(1,0,1)
+    -   Residual diagnostics confirm no autocorrelation
+-   **Male Homicides**: $$ Y_t = \phi(B)Y_{t-1} + \epsilon_t $$
+    -   Best model: ARIMA(2,0,0)(1,0,0)
+
+------------------------------------------------------------------------
+
+## ARIMA with Google Trends
+
+-   **Improved Model Performance**
+    -   ARIMA(1,0,1) for females, ARIMA(0,2,2) for males
+    -   Google Trends as an external regressor
+    -   Ljung-Box test confirms residual independence
+
+------------------------------------------------------------------------
+
+## VAR Model
+
+-   **Multivariate Approach**
+    -   Homicides modeled jointly
+    -   Significant lags capture cross-effects
+
+$$ Y_t = A_1 Y_{t-1} + A_2 Y_{t-2} + \dots + A_k Y_{t-k} + \epsilon_t $$
+
+------------------------------------------------------------------------
+
+## VAR + Google Trends
+
+-   **Model Performance**
+    -   VAR + GT captures interdependencies better
+    -   R²: 0.9298 (female), 0.9565 (male)
+    -   Normality & autocorrelation tests confirm model adequacy
+
+------------------------------------------------------------------------
+
+## Model Comparison
+
+| Model      | RMSE  | MAE   | MAPE  |
+|------------|-------|-------|-------|
+| VAR        | 20.33 | 17.01 | 6.02% |
+| VAR + GT   | 18.02 | 14.89 | 5.28% |
+| ARIMA      | 19.20 | 15.10 | 5.49% |
+| ARIMA + GT | 23.14 | 20.16 | 7.13% |
+
+------------------------------------------------------------------------
+
+## Conclusions
+
+-   **VAR + Google Trends provides the best forecasts.**
+-   **ARIMA models underperform due to univariate limitations.**
+-   **Exogenous indicators enhance predictability of homicide trends.**
+-   **Policy implications for crime prevention and early warning systems.**
+
+------------------------------------------------------------------------
+
+## Literature Review111
+
+| Col1 | Col2 | Col3 | Col4 |
+|------|------|------|------|
+|      |      |      |      |
+|      |      |      |      |
+|      |      |      |      |
+|      |      |      |      |
+|      |      |      |      |
+
+:::::
