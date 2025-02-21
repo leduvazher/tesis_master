@@ -1,7 +1,9 @@
 ```{r}
 #| echo: false
+#install.packages(c("ggplot2", "plotly", "dplyr"), dependencies = TRUE)
 library(ggplot2)
 library(plotly)
+library(dplyr)
 ```
 
 ---
@@ -133,27 +135,39 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 ::::: columns
 ::: {.column width="60%"}
 -   **INEGI Homicide Data (1990-2020)**
-      -   Monthly aggregation (2004-2020)
-      -   Demographic and geographical details
+    -   Monthly aggregation (2004-2020)
+    -   Demographic and geographical details
 -   **Google Trends API**
     -   Provides access to a largely unfiltered sample of actual search requests made to Google
     -   The resulting numbers are then scaled on a range of 0 to 100 based on a topic’s proportion to all searches on all topic
 :::
 
 ::: {.column width="40%"}
-![](INEGI.png){width="291"}
+![](INEGI.png){width="270"}
 
-![](google_trends_logo.png){width="362"}
+![](google_trends_logo.png){width="306"}
 :::
 :::::
 
 ------------------------------------------------------------------------
 
+## Data Limitations {#data_limitations}
 
+### Homicide Data Constraints
+
+-   **Year of Occurrence vs. Year of Registration**: Some homicides are registered in a different year from their occurrence, causing inconsistencies in trend analysis.
+-   **Missing Data**: Some homicide records lack information on the exact year of occurrence, leading to potential bias in estimations.
+-   **Publication Lag**: INEGI's homicide data is subject to delays in publication, often taking several months or years to become available, limiting real-time analysis and decision-making.
+
+### Google Trends Limitations
+
+-   **Search Term Bias**: The popularity of search terms may not directly correlate with crime incidence.
+-   **Temporal Gaps**: Google Trends data is only available from 2004 onwards, limiting historical comparisons.
+-   **Geographical Aggregation**: Data is reported at broader geographic levels, potentially missing localized crime patterns.
 
 ------------------------------------------------------------------------
 
-## Estimation Strategy
+## Estimation Strategy {#estimation_strategy}
 
 1.  **Extraction**: Retrieve data from INEGI and Google Trends.
 2.  **Transformation**: Clean and structure the data.
