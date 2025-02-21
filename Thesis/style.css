@@ -67,3 +67,11 @@ strong {
 #data_sources li {
   font-size: 0.9em; /* Tamaño del cuerpo del texto */
 }
+
+#data_limitations li {
+  font-size: 0.6em; /* Tamaño del cuerpo del texto */
+}
+
+#data_limitations h3 {
+  color: #4AA4DE;
+}
