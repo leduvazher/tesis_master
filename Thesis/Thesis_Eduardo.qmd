@@ -147,7 +147,7 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 
 ![](google_trends_logo.png){width="306"}
 :::
-:::
+:::::
 
 ------------------------------------------------------------------------
 
@@ -161,22 +161,95 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 
 ### Google Trends Limitations
 
-- **Consistency Challenges**: Google Trends data is based on a sampling approach that may introduce variability across different queries and time periods.
-- **Sampling Techniques**: The platform does not provide raw search volume data, but rather normalized indices, which can make direct comparisons across different terms and regions complex.
-
+-   **Consistency Challenges**: Google Trends data is based on a sampling approach that may introduce variability across different queries and time periods.
+-   **Sampling Techniques**: The platform does not provide raw search volume data, but rather normalized indices, which can make direct comparisons across different terms and regions complex.
 
 ------------------------------------------------------------------------
 
 ## Estimation Strategy {#estimation_strategy}
 
+::::: columns
+::: {.column width="60%"}
 1.  **Extraction**: Retrieve data from INEGI and Google Trends.
 2.  **Transformation**: Clean and structure the data.
 3.  **Modeling**:
     -   PCA on Google Trends data
     -   ARIMA & VAR models estimation
     -   Forecast generation and accuracy assessment
+:::
+
+::: {.column width="40%"}
+\
+\
+
+![](pipeline_strategy.png){fig-align="center" width="700" height="300"}
+
+\
+:::
+:::::
 
 ------------------------------------------------------------------------
+
+## Modeling - Principal Component Analysis (PCA) {#pca}
+
+- **Key Terms Used in Research**: 
+  - Report, Complaint, Homicide, Injuries, Theft, Assault, Murder, Missing (female), Missing (male), Rape, Firearm, Corpse, Femicide, Accused, Pistol, Aggressor, Extortion, Soldier, Police, Trafficking.
+
+- **Purpose**:
+  - Reduce dimensionality while preserving key variations.
+- **Methodology**:
+  - Extracted key terms from Google Trends.
+  - Applied PCA to generate a single principal component summarizing crime-related searches.
+  - Selected the first component capturing the highest variance.
+- **Results**:
+  - Explained variance: 71.2%
+  - Strong correlation with homicide trends.
+
+## Modeling -ARIMA & VAR Models {#data_model}
+
+<section>
+
+
+**ARIMA Models**
+
+- **Forecasting based on historical patterns**
+- **Equation:**
+  $$
+  y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \dots + \theta_q \epsilon_{t-q} + \epsilon_t
+
+  $$
+
+- Widely used statistical model that predicts future values based on past observations. It effectively identifies trends, seasonality, and fluctuations by combining:
+    - **AutoRegressive (AR):** Uses past values for forecasting.
+    - **Integrated (I):** Adjusts for trends to stabilize data.
+    - **Moving Average (MA):** Accounts for past errors to refine predictions.
+
+  This model is ideal for short-term forecasting in finance, economics, and operational planning.
+
+</section>
+
+<section>
+
+
+**VAR Models**
+
+
+- **Understanding relationships between multiple factors**
+- **Equation:**
+  $$
+  Y_t = c + \sum_{i=1}^{p} A_i Y_{t-i} + u_t
+  $$
+
+- Analyzes how different variables influence each other over time. Unlike ARIMA, which focuses on a single variable, VAR captures the dynamic interplay between multiple factors.
+  
+  - Helps understand cause-effect relationships between economic or social indicators.
+  - Useful for forecasting interrelated trends, such as how male and female homicide rates evolve together.
+  
+</section>
+
+
+
+
 
 ## Exploratory Analysis
 
@@ -255,4 +328,3 @@ $$ Y_t = A_1 Y_{t-1} + A_2 Y_{t-2} + \dots + A_k Y_{t-k} + \epsilon_t $$
 |      |      |      |      |
 |      |      |      |      |
 |      |      |      |      |
-

@@ -75,3 +75,16 @@ strong {
 #data_limitations h3 {
   color: #4AA4DE;
 }
+
+#pca h2 {
+  font-size: 50px !important;
+}
+
+#pca li {
+  font-size: 0.8em; /* Tamaño del cuerpo del texto */
+}
+
+#data_model {
+  font-size: 0.7em;
+}
+
