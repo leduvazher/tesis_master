@@ -216,7 +216,6 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 - **Equation:**
   $$
   y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \dots + \theta_q \epsilon_{t-q} + \epsilon_t
-
   $$
 
 - Widely used statistical model that predicts future values based on past observations. It effectively identifies trends, seasonality, and fluctuations by combining:
