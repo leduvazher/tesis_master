@@ -20,7 +20,7 @@ strong {
 }
 
 #intro {
-  font-size: 1.0em; /* Ajusta el tamaño según tu preferencia */
+  font-size: 0.9em; /* Ajusta el tamaño según tu preferencia */
 }
 
 #research_context {
@@ -74,6 +74,7 @@ strong {
 
 #data_limitations h3 {
   color: #4AA4DE;
+  font-size: 1.0em;
 }
 
 #pca h2 {

@@ -111,7 +111,6 @@ The literature on homicide forecasting is still developing, with limited studies
 
 <section>
 
-Number of Crime Forecasting Academic Studies
 
 ```{r}
 
@@ -163,7 +162,8 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 
 -   **Year of Occurrence vs. Year of Registration**: Some homicides are registered in a different year from their occurrence, causing inconsistencies in trend analysis.
 -   **Missing Data**: Some homicide records lack information on the exact year of occurrence, leading to potential bias in estimations.
--   **Publication Lag**: INEGI's homicide data is subject to delays in publication, often taking several months or years to become available, limiting real-time analysis and decision-making.
+-   **Publication Lag**: INEGI's homicide data is subject to delays in publication,  limiting real-time analysis and decision-making.
+-   **Changes in political cycles**: Political cycles can shift as governments adopt new strategies or methodologies (e.g., 2020)
 
 ### Google Trends Limitations
 
@@ -243,12 +243,12 @@ disappearances_graph <- ggplot(modeling_exploratory, aes(x = year)) +
         axis.title.y.right = element_text(color = "#4AA4DE"),
         axis.line.y.right = element_line(color = "#4AA4DE"),
         axis.ticks.y.right = element_line(color = "#4AA4DE"),
-        legend.position = "top",   
+        legend.position = "none",   
         legend.direction = "horizontal", 
         legend.title = element_blank())
 
 # Convierte el gráfico ggplot a Plotly
-plotly_graph <- ggplotly(disappearances_graph, width = 1000, height = 450)
+plotly_graph <- ggplotly(disappearances_graph, width = 900, height = 450)
 
 # Modifica la configuración del eje secundario en Plotly
 plotly_graph <- plotly_graph %>%
@@ -260,7 +260,8 @@ plotly_graph <- plotly_graph %>%
       showgrid = FALSE,
       titlefont = list(color = "#4AA4DE"),
       tickfont = list(color = "#4AA4DE")
-    )
+    ),
+    margin = list(l = 80, r = 120, t = 50, b = 50)
   )
 
 # Asegura que la serie de "Disappearances" use el segundo eje
@@ -269,6 +270,8 @@ for (i in seq_along(plotly_graph$x$data)) {
     plotly_graph$x$data[[i]]$yaxis <- "y2"
   }
 }
+
+plotly_graph$x$layout$yaxis2$title <- "Disappearances"
 
 # Muestra el gráfico
 plotly_graph
