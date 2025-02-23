@@ -99,3 +99,20 @@ strong {
 #assessment {
   font-size: 1.2em; /* Tamaño del cuerpo del texto */
 }
+
+
+#results_female h2 {
+  font-size: 1.1em; /* Tamaño del cuerpo del texto */
+}
+
+#results_female {
+  font-size: 1.2em; /* Tamaño del cuerpo del texto */
+}
+
+#results_male h2 {
+  font-size: 1.1em; /* Tamaño del cuerpo del texto */
+}
+
+#results_male {
+  font-size: 1.2em; /* Tamaño del cuerpo del texto */
+}

@@ -8,10 +8,16 @@ library(dplyr)
 
 ---
 title: "Comparison of univariates and multivariates forecasts of homicides in Mexico with and without Google Trends data"
-author: "Eduardo Vazquez"
+author: 
+  - Eduardo Vazquez <br> Thesis tutor - PhD. Eliud Silva
+institute: Universidad Anahuac
 format: 
   revealjs:
-    css: style.css  
+    css: style.css
+    slide-number: c/t
+    logo: images/anahuac-2.png
+    logo-width: 100px
+    logo-height: 100px
     theme: simple
     title-slide-attributes:
       data-background-image: justicia.jpg
@@ -351,32 +357,37 @@ plotly_graph
 
 ![](images/resultados_var.png){fig-align="center" width="522"}
 
-## Model Comparison
+------------------------------------------------------------------------
 
-| Model      | RMSE  | MAE   | MAPE  |
-|------------|-------|-------|-------|
-| VAR        | 20.33 | 17.01 | 6.02% |
-| VAR + GT   | 18.02 | 14.89 | 5.28% |
-| ARIMA      | 19.20 | 15.10 | 5.49% |
-| ARIMA + GT | 23.14 | 20.16 | 7.13% |
+## Results - Forecast Performance Female Homicides {#results_female}
+
+| Model                 | ME       | RMSE    | MAE     | MPE     | MAPE   |
+|-----------------------|----------|---------|---------|---------|--------|
+| ARIMA                 | -10.8304 | 19.2040 | 15.1015 | -4.1284 | 5.4938 |
+| ARIMA + Google Trends | 0.0373   | 23.1409 | 20.1676 | -0.5460 | 7.1293 |
+| VAR                   | -0.3923  | 20.3284 | 17.0104 | -0.6308 | 6.0221 |
+| VAR + Google Trends   | -2.9899  | 18.0249 | 14.8871 | -1.4215 | 5.2841 |
+
+![](images/final%20de%20finales%20modelo%20mujeres.png){fig-align="center"}
+
+------------------------------------------------------------------------
+
+## Results - Forecast Performance Male Homicides {#results_male}
+
+| Model                 | ME       | RMSE     | MAE      | MPE     | MAPE   |
+|-----------------------|----------|----------|----------|---------|--------|
+| ARIMA                 | 142.7225 | 167.5095 | 142.7828 | 5.9106  | 5.9132 |
+| ARIMA + Google Trends | -67.9903 | 112.9804 | 81.3703  | -2.9404 | 3.4834 |
+| VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
+| VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
+
+![](images/final de finales hombres.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
 ## Conclusions
 
--   **VAR + Google Trends provides the best forecasts.**
--   **ARIMA models underperform due to univariate limitations.**
--   **Exogenous indicators enhance predictability of homicide trends.**
--   **Policy implications for crime prevention and early warning systems.**
-
-------------------------------------------------------------------------
-
-## Literature Review111
-
-| Col1 | Col2 | Col3 | Col4 |
-|------|------|------|------|
-|      |      |      |      |
-|      |      |      |      |
-|      |      |      |      |
-|      |      |      |      |
-|      |      |      |      |
+-   VAR + Google Trends provides the best forecasts.
+-   ARIMA models underperform due to univariate limitations.
+-   Exogenous indicators enhance predictability of homicide trends.
+-   Policy implications for crime prevention and early warning systems.
