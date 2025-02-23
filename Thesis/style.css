@@ -84,7 +84,18 @@ strong {
   font-size: 0.8em; /* Tamaño del cuerpo del texto */
 }
 
+#estimation_strategy li {
+  font-size: 0.9em;
+}
+
 #data_model {
   font-size: 0.7em;
 }
 
+#modeling_eda {
+  font-size: 0.8em; /* Tamaño del cuerpo del texto */
+}
+
+#assessment {
+  font-size: 1.2em; /* Tamaño del cuerpo del texto */
+}

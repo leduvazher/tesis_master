@@ -190,113 +190,166 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 
 ------------------------------------------------------------------------
 
+## Modeling - Exploratory Data Analysis {#modeling_eda}
+
+-   **Homicide Trends** (2006-2021)
+    -   Government security policy shifts affecting trends in 2007
+    -   Unexpected decline in 2020 (Covid, Homicide Reclasification)
+
+```{r}
+library(ggplot2)
+library(readr)
+library(dplyr)
+
+setwd("C:/Users/eduva/Documents/Github/tesis_master/Thesis")
+
+# Lee el archivo CSV
+modeling_exploratory <- read_csv("modeling_exploratory.csv")
+
+# Convierte la variable 'year' a formato fecha
+modeling_exploratory <- modeling_exploratory %>%
+  mutate(year = as.Date(as.character(year), format = "%Y"))
+
+# Obtiene los valores máximos para escalamiento
+max_homicides <- max(c(modeling_exploratory$homicides_y_ocurrence, modeling_exploratory$homicides_y_registration), na.rm = TRUE)
+max_disappearances <- max(modeling_exploratory$disappearances, na.rm = TRUE)
+
+disappearances_graph <- ggplot(modeling_exploratory, aes(x = year)) +
+  geom_line(aes(y = homicides_y_ocurrence, color = "Homicides (ocurrence)"), linewidth = 0.9, linetype = "dashed") +
+  geom_line(aes(y = homicides_y_registration, color = "Homicides (register)"), linewidth = 0.9, linetype = "dotted") +
+  geom_line(aes(y = disappearances * (max_homicides / max_disappearances), color = "Disappearances"), linewidth = 0.7, linetype = "solid") +
+  labs(title = "Homicides and Disappearances",
+       x = "Year",
+       y = "Homicides number") +
+  scale_x_date(date_labels = "%Y", date_breaks = "1 year") +
+  scale_y_continuous(
+    name = "Homicides",
+    sec.axis = sec_axis(~ . / (max_homicides / max_disappearances), name = "Disappearances")
+  ) +
+  scale_color_manual(
+    values = c("Homicides (ocurrence)" = "blue", 
+               "Homicides (register)" = "red", 
+               "Disappearances" = "#4AA4DE")
+  ) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        axis.title.y = element_text(color = "blue"),
+        axis.title.y.right = element_text(color = "#4AA4DE"),
+        axis.line.y.right = element_line(color = "#4AA4DE"),
+        axis.ticks.y.right = element_line(color = "#4AA4DE"),
+        legend.position = "top",   
+        legend.direction = "horizontal", 
+        legend.title = element_blank())
+
+# Convierte el gráfico ggplot a Plotly
+plotly_graph <- ggplotly(disappearances_graph, width = 1000, height = 450)
+
+# Modifica la configuración del eje secundario en Plotly
+plotly_graph <- plotly_graph %>%
+  layout(
+    yaxis2 = list(
+      title = "Disappearances",
+      overlaying = "y",  # Superpone el segundo eje sobre el eje principal
+      side = "right",     # Ubica el eje secundario a la derecha
+      showgrid = FALSE,
+      titlefont = list(color = "#4AA4DE"),
+      tickfont = list(color = "#4AA4DE")
+    )
+  )
+
+# Asegura que la serie de "Disappearances" use el segundo eje
+for (i in seq_along(plotly_graph$x$data)) {
+  if (plotly_graph$x$data[[i]]$name == "Disappearances") {
+    plotly_graph$x$data[[i]]$yaxis <- "y2"
+  }
+}
+
+# Muestra el gráfico
+plotly_graph
+
+```
+
 ## Modeling - Principal Component Analysis (PCA) {#pca}
 
-- **Key Terms Used in Research**: 
-  - Report, Complaint, Homicide, Injuries, Theft, Assault, Murder, Missing (female), Missing (male), Rape, Firearm, Corpse, Femicide, Accused, Pistol, Aggressor, Extortion, Soldier, Police, Trafficking.
+-   **Key Terms Used in Research**:
+    -   Report, Complaint, Homicide, Injuries, Theft, Assault, Murder, Missing (female), Missing (male), Rape, Firearm, Corpse, Femicide, Accused, Pistol, Aggressor, Extortion, Soldier, Police, Trafficking.
+-   **Purpose**:
+    -   Reduce dimensionality while preserving key variations.
+-   **Methodology**:
+    -   Extracted key terms from Google Trends.
+    -   Applied PCA to generate a single principal component summarizing crime-related searches.
+    -   Selected the first component capturing the highest variance.
 
-- **Purpose**:
-  - Reduce dimensionality while preserving key variations.
-- **Methodology**:
-  - Extracted key terms from Google Trends.
-  - Applied PCA to generate a single principal component summarizing crime-related searches.
-  - Selected the first component capturing the highest variance.
-- **Results**:
-  - Explained variance: 71.2%
-  - Strong correlation with homicide trends.
-
-## Modeling -ARIMA & VAR Models {#data_model}
+## Modeling - ARIMA & VAR Models {#data_model}
 
 <section>
-
 
 **ARIMA Models**
 
-- **Forecasting based on historical patterns**
-- **Equation:**
-  $$
-  y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \dots + \theta_q \epsilon_{t-q} + \epsilon_t
-  $$
+-   **Forecasting based on historical patterns**
 
-- Widely used statistical model that predicts future values based on past observations. It effectively identifies trends, seasonality, and fluctuations by combining:
-    - **AutoRegressive (AR):** Uses past values for forecasting.
-    - **Integrated (I):** Adjusts for trends to stabilize data.
-    - **Moving Average (MA):** Accounts for past errors to refine predictions.
+-   **Equation:** $$
+    y_t = c + \phi_1 y_{t-1} + \phi_2 y_{t-2} + \dots + \phi_p y_{t-p} + \theta_1 \epsilon_{t-1} + \theta_2 \epsilon_{t-2} + \dots + \theta_q \epsilon_{t-q} + \epsilon_t
+    $$
 
-  This model is ideal for short-term forecasting in finance, economics, and operational planning.
+-   Widely used statistical model that predicts future values based on past observations. It effectively identifies trends, seasonality, and fluctuations by combining:
+
+    -   **AutoRegressive (AR):** Uses past values for forecasting.
+    -   **Integrated (I):** Adjusts for trends to stabilize data.
+    -   **Moving Average (MA):** Accounts for past errors to refine predictions.
+
+    This model is ideal for short-term forecasting in finance, economics, and operational planning.
 
 </section>
 
 <section>
 
-
 **VAR Models**
 
+-   **Understanding relationships between multiple factors**
 
-- **Understanding relationships between multiple factors**
-- **Equation:**
-  $$
-  Y_t = c + \sum_{i=1}^{p} A_i Y_{t-i} + u_t
-  $$
+-   **Equation:** $$
+    Y_{1,t}=\ c_1\ +\ A_{11,1}Y_{1,t-1}+{\ A}_{12,1}Y_{2,t-1}+\ ...\ +A_{1k,p}Y_{k,t-p\ }+u_{1,t}\
+    \\ 
+    Y_{2,t}=\ c_2\ +\ A_{21,1}Y_{1,t-1}+{\ A}_{22,1}Y_{2,t-1}+\ ...\ +A_{2k,p}Y_{k,t-p} +u_{2,,t}
+    \\
+    ...
+    \\
+    Y_{k,t}=\ c_k\ +\ A_{k1,1}Y_{1,t-1}+{\ A}_{k2,1}Y_{2,t-1}+\ ...\ +A_{3k,p}Y_{k,t-p} +u_{3,,t}
+    $$
 
-- Analyzes how different variables influence each other over time. Unlike ARIMA, which focuses on a single variable, VAR captures the dynamic interplay between multiple factors.
-  
-  - Helps understand cause-effect relationships between economic or social indicators.
-  - Useful for forecasting interrelated trends, such as how male and female homicide rates evolve together.
-  
+-   Analyzes how different variables influence each other over time. Unlike ARIMA, which focuses on a single variable, VAR captures the dynamic interplay between multiple factors.
+
+-   Helps understand cause-effect relationships between economic or social indicators.
+
 </section>
 
+------------------------------------------------------------------------
 
+## Modeling - Assessment {#assessment}
 
-
-
-## Exploratory Analysis
-
--   **Homicide Trends** (2006-2021)
-    -   Government security policy shifts affecting trends
-    -   Unexpected decline in 2020
--   **PCA Results**
-    -   Selected terms explain 71.2% of variance
+| **Category** | **Metric** | **Description** |
+|-----------------------|-------------------|------------------------------|
+| **Residual Diagnostics** | Ljung-Box Test | Checks autocorrelation in residuals. |
+|  | Anderson-Darling Test | Tests residuals for normality. |
+|  | Portmanteau Test | Assesses independence of residuals. |
+| **Model Comparison** | Adjusted R² | Evaluates model fit. |
+|  | Coefficient Significance | Determines statistical relevance of predictors. |
+| **Model Performance** | Mean Error (ME) | Measures overall bias in predictions. |
+|  | Root Mean Squared Error (RMSE) | Evaluates average prediction error magnitude. |
+|  | Mean Absolute Error (MAE) | Assesses the average absolute deviation from actual values. |
+|  | Mean Percentage Error (MPE) | Indicates model tendency to over/underestimate. |
+|  | Mean Absolute Percentage Error (MAPE) | Standardized error metric useful for comparison. |
 
 ------------------------------------------------------------------------
 
-## ARIMA Models
+## Results - **ARIMA Models**
 
--   **Female Homicides**: $$ (1-B)Y_t = \theta(B)\epsilon_t $$
-    -   Best model: ARIMA(0,1,1)(1,0,1)
-    -   Residual diagnostics confirm no autocorrelation
--   **Male Homicides**: $$ Y_t = \phi(B)Y_{t-1} + \epsilon_t $$
-    -   Best model: ARIMA(2,0,0)(1,0,0)
+![](images/resultados_arima.png){fig-align="center" width="522"}
 
-------------------------------------------------------------------------
+## Results - **VAR Model**
 
-## ARIMA with Google Trends
-
--   **Improved Model Performance**
-    -   ARIMA(1,0,1) for females, ARIMA(0,2,2) for males
-    -   Google Trends as an external regressor
-    -   Ljung-Box test confirms residual independence
-
-------------------------------------------------------------------------
-
-## VAR Model
-
--   **Multivariate Approach**
-    -   Homicides modeled jointly
-    -   Significant lags capture cross-effects
-
-$$ Y_t = A_1 Y_{t-1} + A_2 Y_{t-2} + \dots + A_k Y_{t-k} + \epsilon_t $$
-
-------------------------------------------------------------------------
-
-## VAR + Google Trends
-
--   **Model Performance**
-    -   VAR + GT captures interdependencies better
-    -   R²: 0.9298 (female), 0.9565 (male)
-    -   Normality & autocorrelation tests confirm model adequacy
-
-------------------------------------------------------------------------
+![](images/resultados_var.png){fig-align="center" width="522"}
 
 ## Model Comparison
 
