@@ -9,7 +9,7 @@ library(dplyr)
 ---
 title: "Comparison of univariates and multivariates forecasts of homicides in Mexico with and without Google Trends data"
 author: 
-  - Eduardo Vazquez <br> Thesis tutor - PhD. Eliud Silva
+  - Eduardo Vazquez <br> Thesis Director - PhD. Eliud Silva
 institute: Universidad Anahuac
 format: 
   revealjs:
@@ -95,7 +95,7 @@ According to Mexico Unido Contra la Delincuencia (2024)
 
 <section>
 
-The literature on homicide forecasting is still developing, with limited studies compared to other crime forecasting areas. While some models exist, research remains fragmented, and there is room for improvement in data sources and methodologies.
+The literature on homicide forecasting is still developing, with limited studies compared to other crime forecasting areas.
 
 | Author | Methodology | Findings | Scope |
 |------------------|-------------------|------------------|------------------|
@@ -111,6 +111,7 @@ The literature on homicide forecasting is still developing, with limited studies
 
 <section>
 
+While some models exist, research remains fragmented, and there is room for improvement in data sources and methodologies.
 
 ```{r}
 
@@ -162,7 +163,7 @@ ggplotly(p = publications_crime_graph, width = 1000, height = 550)
 
 -   **Year of Occurrence vs. Year of Registration**: Some homicides are registered in a different year from their occurrence, causing inconsistencies in trend analysis.
 -   **Missing Data**: Some homicide records lack information on the exact year of occurrence, leading to potential bias in estimations.
--   **Publication Lag**: INEGI's homicide data is subject to delays in publication,  limiting real-time analysis and decision-making.
+-   **Publication Lag**: INEGI's homicide data is subject to delays in publication, limiting real-time analysis and decision-making.
 -   **Changes in political cycles**: Political cycles can shift as governments adopt new strategies or methodologies (e.g., 2020)
 
 ### Google Trends Limitations
@@ -337,18 +338,19 @@ plotly_graph
 
 ## Modeling - Assessment {#assessment}
 
-| **Category** | **Metric** | **Description** |
-|-----------------------|-------------------|------------------------------|
-| **Residual Diagnostics** | Ljung-Box Test | Checks autocorrelation in residuals. |
-|  | Anderson-Darling Test | Tests residuals for normality. |
-|  | Portmanteau Test | Assesses independence of residuals. |
-| **Model Comparison** | Adjusted R² | Evaluates model fit. |
-|  | Coefficient Significance | Determines statistical relevance of predictors. |
-| **Model Performance** | Mean Error (ME) | Measures overall bias in predictions. |
-|  | Root Mean Squared Error (RMSE) | Evaluates average prediction error magnitude. |
-|  | Mean Absolute Error (MAE) | Assesses the average absolute deviation from actual values. |
-|  | Mean Percentage Error (MPE) | Indicates model tendency to over/underestimate. |
-|  | Mean Absolute Percentage Error (MAPE) | Standardized error metric useful for comparison. |
+<section>**ARIMA Models**
+
+![](arima_table.png)
+
+</section>
+
+<section>
+
+**VAR Models**
+
+![](var_table.png)
+
+</section>
 
 ------------------------------------------------------------------------
 
@@ -384,13 +386,27 @@ plotly_graph
 | VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
 | VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
 
-![](images/final de finales hombres.png){fig-align="center"}
+![](images/final%20de%20finales%20hombres.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
-## Conclusions
+## Conclusions {#conclusions}
 
 -   VAR + Google Trends provides the best forecasts.
 -   ARIMA models underperform due to univariate limitations.
 -   Exogenous indicators enhance predictability of homicide trends.
 -   Policy implications for crime prevention and early warning systems.
+-   It's crucial to develop an effective forecasting strategy for potential interventions in public safety matters
+
+
+## References {#references}
+
+- Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons.
+
+- Ciudadano, O. N. (2017). Desapariciones Forzadas. El Registro Estadístico de la Desaparicón: ¿Delito o Circunstancia? Ciudad de Mexico.
+
+- Delgadillo, G., & Torres, D. (26 de 12 de 2023). ¿Qué es y cómo funciona el Registro Nacional de Personas Desaparecidas y No Localizadas (RNPDNO)? Animal Politico. Obtenido de https://animalpolitico.com/analisis/organizaciones/el-blog-del-seminario-sobre-violencia-y-paz/registro-nacional-personas-desaparecidas-que-es-como-funciona?rtbref=rtb_krqfxr3j12dhx0dkl7c2_1714875535898
+
+- National System of Statistical and Geographical Information
+
+- Piña, C., & Ramirez-Ramirez, L. (July de 2019). Exploring crime patterns in Mexico City. Journal of Big Data, 6(65).

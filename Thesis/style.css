@@ -117,3 +117,7 @@ strong {
 #results_male {
   font-size: 1.2em; /* Tamaño del cuerpo del texto */
 }
+
+#references {
+  font-size: 0.8em;
+}
