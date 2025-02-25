@@ -62,14 +62,13 @@ homicide_rate_graph <- ggplot(datos_filtrados, aes(x = year_date, y = homicide_r
                date_breaks = "1 year") +  # Formato y saltos del eje X
   theme_classic() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-ggplotly(p = homicide_rate_graph, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
+ggplotly(p = homicide_rate_graph, width = 1000, height = 350)  # Ajusta el tamaño en píxeles
 
 ```
 
-<p style="text-align: center; font-style: italic; font-size: 12px;">
 
+<p style="text-align: center; font-style: italic; font-size: 8px;">
 Source: National Institute of Statistics and Geography (INEGI)
-
 </p>
 
 </section>
@@ -138,10 +137,8 @@ publications_crime_graph <- ggplot(df, aes(x = factor(published_year), y = artic
 ggplotly(p = publications_crime_graph, width = 1000, height = 500) 
 ```
 
-<p style="text-align: center; font-style: italic; font-size: 12px;">
-
+<p style="text-align: center; font-style: italic; font-size: 8px;">
 Source: Dimensions AI, query= "crime forecasting"
-
 </p>
 
 </section>
@@ -291,7 +288,7 @@ ggplotly(p = plotly_graph, width = 1000, height = 400)  # Ajusta el tamaño en p
 
 ```
 
-<p style="text-align: center; font-style: italic; font-size: 10px;">
+<p style="text-align: center; font-style: italic; font-size: 8px;">
 Source: National Institute of Statistics and Geography (INEGI)
 </p>
 
