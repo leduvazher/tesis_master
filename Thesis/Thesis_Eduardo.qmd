@@ -65,6 +65,9 @@ homicide_rate_graph <- ggplot(datos_filtrados, aes(x = year_date, y = homicide_r
 ggplotly(p = homicide_rate_graph, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
 
 ```
+<p style="text-align: center; font-style: italic; font-size: 12px;">
+Source: National Institute of Statistics and Geography (INEGI)
+</p>
 
 </section>
 
@@ -129,8 +132,12 @@ publications_crime_graph <- ggplot(df, aes(x = factor(published_year), y = artic
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
 
 
-ggplotly(p = publications_crime_graph, width = 1000, height = 550) 
+ggplotly(p = publications_crime_graph, width = 1000, height = 500) 
 ```
+<p style="text-align: center; font-style: italic; font-size: 12px;">
+Source: Dimensions AI, query= "crime forecasting"
+</p>
+
 
 </section>
 
@@ -278,6 +285,10 @@ plotly_graph$x$layout$yaxis2$title <- "Disappearances"
 plotly_graph
 
 ```
+<p style="text-align: center; font-style: italic; font-size: 12px;">
+Source: National Institute of Statistics and Geography (INEGI)
+</p>
+
 
 ## Modeling - Principal Component Analysis (PCA) {#pca}
 
