@@ -65,8 +65,11 @@ homicide_rate_graph <- ggplot(datos_filtrados, aes(x = year_date, y = homicide_r
 ggplotly(p = homicide_rate_graph, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
 
 ```
+
 <p style="text-align: center; font-style: italic; font-size: 12px;">
+
 Source: National Institute of Statistics and Geography (INEGI)
+
 </p>
 
 </section>
@@ -134,10 +137,12 @@ publications_crime_graph <- ggplot(df, aes(x = factor(published_year), y = artic
 
 ggplotly(p = publications_crime_graph, width = 1000, height = 500) 
 ```
-<p style="text-align: center; font-style: italic; font-size: 12px;">
-Source: Dimensions AI, query= "crime forecasting"
-</p>
 
+<p style="text-align: center; font-style: italic; font-size: 12px;">
+
+Source: Dimensions AI, query= "crime forecasting"
+
+</p>
 
 </section>
 
@@ -282,13 +287,13 @@ for (i in seq_along(plotly_graph$x$data)) {
 plotly_graph$x$layout$yaxis2$title <- "Disappearances"
 
 # Muestra el gráfico
-plotly_graph
+ggplotly(p = plotly_graph, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
 
 ```
-<p style="text-align: center; font-style: italic; font-size: 12px;">
+
+<p style="text-align: center; font-style: italic; font-size: 10px;">
 Source: National Institute of Statistics and Geography (INEGI)
 </p>
-
 
 ## Modeling - Principal Component Analysis (PCA) {#pca}
 
@@ -349,7 +354,9 @@ Source: National Institute of Statistics and Geography (INEGI)
 
 ## Modeling - Assessment {#assessment}
 
-<section>**ARIMA Models**
+<section>
+
+**ARIMA Models**
 
 ![](arima_table.png)
 
@@ -409,15 +416,14 @@ Source: National Institute of Statistics and Geography (INEGI)
 -   Policy implications for crime prevention and early warning systems.
 -   It's crucial to develop an effective forecasting strategy for potential interventions in public safety matters
 
-
 ## References {#references}
 
-- Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons.
+-   Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons.
 
-- Ciudadano, O. N. (2017). Desapariciones Forzadas. El Registro Estadístico de la Desaparicón: ¿Delito o Circunstancia? Ciudad de Mexico.
+-   Ciudadano, O. N. (2017). Desapariciones Forzadas. El Registro Estadístico de la Desaparicón: ¿Delito o Circunstancia? Ciudad de Mexico.
 
-- Delgadillo, G., & Torres, D. (26 de 12 de 2023). ¿Qué es y cómo funciona el Registro Nacional de Personas Desaparecidas y No Localizadas (RNPDNO)? Animal Politico. Obtenido de https://animalpolitico.com/analisis/organizaciones/el-blog-del-seminario-sobre-violencia-y-paz/registro-nacional-personas-desaparecidas-que-es-como-funciona?rtbref=rtb_krqfxr3j12dhx0dkl7c2_1714875535898
+-   Delgadillo, G., & Torres, D. (26 de 12 de 2023). ¿Qué es y cómo funciona el Registro Nacional de Personas Desaparecidas y No Localizadas (RNPDNO)? Animal Politico. Obtenido de https://animalpolitico.com/analisis/organizaciones/el-blog-del-seminario-sobre-violencia-y-paz/registro-nacional-personas-desaparecidas-que-es-como-funciona?rtbref=rtb_krqfxr3j12dhx0dkl7c2_1714875535898
 
-- National System of Statistical and Geographical Information
+-   National System of Statistical and Geographical Information
 
-- Piña, C., & Ramirez-Ramirez, L. (July de 2019). Exploring crime patterns in Mexico City. Journal of Big Data, 6(65).
+-   Piña, C., & Ramirez-Ramirez, L. (July de 2019). Exploring crime patterns in Mexico City. Journal of Big Data, 6(65).
