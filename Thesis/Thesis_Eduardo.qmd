@@ -30,7 +30,7 @@ format:
 
 -   **Context**: National homicide rates in Mexico have tripled since 1990. Violence generates significant social disruptions. To effectively address this issue, it is essential to shift from a reactive approach to a proactive one, leveraging forecasting techniques to inform strategy and prevention efforts.
 
--   **Objective**: Comparing forecasting strategies to predict national homicide rates by sex, using Google Trends data.
+-   **Objective**: Comparing forecasting strategies to predict national adults homicides by sex, using Google Trends data.
 
 ## Research Context {#research_context}
 
