@@ -153,6 +153,7 @@ Source: Dimensions AI, query= "crime forecasting"
     -   Monthly aggregation (2004-2020)
     -   Demographic and geographical details
 -   **Google Trends API**
+    -   According to HubSpot, Google dominates global searches, accounting for 85% of all searches, 75% of desktop searches, 77% of tablet searches, and 92% of mobile searches
     -   Provides access to a largely unfiltered sample of actual search requests made to Google
     -   The resulting numbers are then scaled on a range of 0 to 100 based on a topic’s proportion to all searches on all topic
 :::
