@@ -7,7 +7,7 @@ library(dplyr)
 ```
 
 ---
-title: "Comparison of univariates and multivariates forecasts of homicides in Mexico with and without Google Trends data"
+title: "Using Google Trends Data to Forecast Homicide Mortality: The Case of Mexico"
 author: 
   - Eduardo Vazquez <br> Thesis Director - PhD. Eliud Silva
 institute: Universidad Anahuac
