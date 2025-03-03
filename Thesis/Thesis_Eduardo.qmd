@@ -462,7 +462,7 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
         panel.grid.minor = element_blank()) 
 
 # Convertir a plotly
-ggplotly(p, width = 900, height = 450) %>% layout(legend = list(orientation = "r", x = 1.1, xanchor = "center"))
+ggplotly(p, width = 900, height = 450) %>% layout(legend = list(orientation = "l", x = 1.1, xanchor = "center"))
 
 ```
 

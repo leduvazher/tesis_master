@@ -125,3 +125,8 @@ strong {
 #references {
   font-size: 0.7em;
 }
+
+#results_male .plotly.html-widget {
+  width: 100% !important;
+  height: 500px !important;
+}
