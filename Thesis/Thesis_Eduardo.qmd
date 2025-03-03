@@ -389,15 +389,29 @@ The selected words captured 71.2% of the total variance: Complaint, Report, To r
 
 ------------------------------------------------------------------------
 
-## Results - **ARIMA Models**
-
-![](images/resultados_arima.png){fig-align="center" width="522"}
-
-------------------------------------------------------------------------
-
 ## Results - **VAR Model**
 
 ![](images/resultados_var.png){fig-align="center" width="522"}
+
+```{r, echo=FALSE, results="hide", message=FALSE, warning=FALSE}
+setwd("C:/Users/eduva/Documents/Tesis/dataset")  
+# Evita la impresión de gráficos
+grDevices::pdf(file = NULL)
+
+# Carga el script sin imprimir código, mensajes, advertencias ni gráficos
+invisible(
+  suppressMessages(
+    suppressWarnings(
+      source("v5_model.R", echo = FALSE)
+    )
+  )
+)
+
+# Cierra el dispositivo gráfico para evitar cualquier visualización
+grDevices::dev.off()
+
+
+```
 
 ------------------------------------------------------------------------
 
@@ -410,7 +424,21 @@ The selected words captured 71.2% of the total variance: Complaint, Report, To r
 | VAR                   | -0.3923  | 20.3284 | 17.0104 | -0.6308 | 6.0221 |
 | VAR + Google Trends   | -2.9899  | 18.0249 | 14.8871 | -1.4215 | 5.2841 |
 
-![](female_results.png){fig-align="center"}
+```{r}
+ph_female <- autoplot(window(var_model[,2], start = c(2006,1), end = c(2020,3), frequency = 12), ylab = "Female Homicides") +
+  autolayer(fit_v2ts, series = "VAR") + 
+  autolayer(fit_v3ts, series = "VAR + GT") +
+  autolayer(fit_v4ts, series = "ARIMA") +
+  autolayer(fit_v5ts, series = "ARIMA + GT") +
+  theme_bw() +  # Fondo blanco
+  theme(panel.grid.major = element_blank(),  # Elimina las líneas de la cuadrícula principales
+        panel.grid.minor = element_blank())  # Elimina las líneas de la cuadrícula menores
+
+# Convertir a plotly
+ggplotly(ph_female, width = 1000, height = 450)
+
+
+```
 
 ------------------------------------------------------------------------
 
@@ -423,7 +451,20 @@ The selected words captured 71.2% of the total variance: Complaint, Report, To r
 | VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
 | VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
 
-![](male_results.png){fig-align="center"}
+```{r}
+ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequency = 12), ylab = "Male Homicides") +
+  autolayer(fit_v2ts_hombres, series = "VAR") + 
+  autolayer(fit_v3ts_hombres, series = "VAR + GT") +
+  autolayer(fit_v4ts_hombres, series = "ARIMA") +
+  autolayer(fit_v5ts_hombres, series = "ARIMA + GT") +
+  theme_bw() +
+  theme(panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
+# Convertir a plotly
+ggplotly(p, width = 1000, height = 450)
+
+```
 
 ------------------------------------------------------------------------
 
@@ -437,12 +478,12 @@ The selected words captured 71.2% of the total variance: Complaint, Report, To r
 
 ## Basic References {#references}
 
--   Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons.
+-   Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons, USA.
 
--   Ciudadano, O. N. (2017). Desapariciones Forzadas. El Registro Estadístico de la Desaparicón: ¿Delito o Circunstancia? Ciudad de Mexico.
+-   Observatorio Nacional Ciudadano (2017). Desapariciones forzadas e involuntarias. El Registro Estadístico de la Desaparicón: ¿Delito o Circunstancia?, Ciudad de Mexico.
 
--   Delgadillo, G., & Torres, D. (26 de 12 de 2023). ¿Qué es y cómo funciona el Registro Nacional de Personas Desaparecidas y No Localizadas (RNPDNO)? Animal Politico. Obtenido de https://animalpolitico.com/analisis/organizaciones/el-blog-del-seminario-sobre-violencia-y-paz/registro-nacional-personas-desaparecidas-que-es-como-funciona?rtbref=rtb_krqfxr3j12dhx0dkl7c2_1714875535898
+-   Piña, C., & Ramirez-Ramirez, L. (2019). Exploring crime patterns in Mexico City. Journal of Big Data.
+
+-   Delgadillo, G., & Torres, D. (2023). ¿Qué es y cómo funciona el Registro Nacional de Personas Desaparecidas y No Localizadas (RNPDNO)? Animal Politico. Obtenido de https://animalpolitico.com/analisis/organizaciones/el-blog-del-seminario-sobre-violencia-y-paz/registro-nacional-personas-desaparecidas-que-es-como-funciona?rtbref=rtb_krqfxr3j12dhx0dkl7c2_1714875535898
 
 -   National System of Statistical and Geographical Information
-
--   Piña, C., & Ramirez-Ramirez, L. (July de 2019). Exploring crime patterns in Mexico City. Journal of Big Data, 6(65).
