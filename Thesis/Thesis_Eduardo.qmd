@@ -442,7 +442,10 @@ ggplotly(ph_female, width = 950, height = 450)
 
 ------------------------------------------------------------------------
 
+
+
 ## Results - Forecast Performance Male Homicides {#results_male}
+
 
 | Model                 | ME       | RMSE     | MAE      | MPE     | MAPE   |
 |-----------------------|----------|----------|----------|---------|--------|
@@ -450,6 +453,13 @@ ggplotly(ph_female, width = 950, height = 450)
 | ARIMA + Google Trends | -67.9903 | 112.9804 | 81.3703  | -2.9404 | 3.4834 |
 | VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
 | VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
+
+<style>
+#results_male .plotly.html-widget {
+    width: 100% !important;
+    height: 500px !important;
+}
+</style>
 
 ```{r}
 ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequency = 12), ylab = "Male Homicides") +
