@@ -30,7 +30,7 @@ format:
 
 -   **Context**: National homicide rates in Mexico have tripled since 1990. Violence generates significant social disruptions. To effectively address this issue, it is essential to shift from a reactive approach to a proactive one, leveraging forecasting techniques to inform strategy and prevention efforts.
 
--   **Objective**: Comparing forecasting strategies to predict national adults homicides by sex, using Google Trends data.
+-   **Objective**: Comparing forecasting strategies to predict national adults homicides by sex, using Google Trends data from **2019 to March 2020**
 
 ## Research Context {#research_context}
 
@@ -66,9 +66,10 @@ ggplotly(p = homicide_rate_graph, width = 1000, height = 350)  # Ajusta el tama√
 
 ```
 
+<p style="text-align: center; font-style: italic; font-size: 08px;">
 
-<p style="text-align: center; font-style: italic; font-size: 10px;">
 Source: National Institute of Statistics and Geography (INEGI)
+
 </p>
 
 </section>
@@ -137,8 +138,10 @@ publications_crime_graph <- ggplot(df, aes(x = factor(published_year), y = artic
 ggplotly(p = publications_crime_graph, width = 1000, height = 500) 
 ```
 
-<p style="text-align: center; font-style: italic; font-size: 10px;">
+<p style="text-align: center; font-style: italic; font-size: 08px;">
+
 Source: Dimensions AI, query= "crime forecasting"
+
 </p>
 
 </section>
@@ -192,7 +195,7 @@ Source: Dimensions AI, query= "crime forecasting"
 3.  **Modeling**:
     -   PCA on Google Trends data
     -   ARIMA & VAR models estimation
-    -   Forecast generation and accuracy assessment
+    -   Forecast generation and accuracy assessment from **2019 to march 2020**
 :::
 
 ::: {.column width="40%"}
@@ -289,8 +292,10 @@ ggplotly(p = plotly_graph, width = 1000, height = 400)  # Ajusta el tama√±o en p
 
 ```
 
-<p style="text-align: center; font-style: italic; font-size: 10px;">
+<p style="text-align: center; font-style: italic; font-size: 08px;">
+
 Source: National Institute of Statistics and Geography (INEGI)
+
 </p>
 
 ## Modeling - Principal Component Analysis (PCA) {#pca}
@@ -370,9 +375,25 @@ Source: National Institute of Statistics and Geography (INEGI)
 
 ------------------------------------------------------------------------
 
+## Results - **PCA model** {#results_pca}
+
+The selected words captured 71.2% of the total variance: Complaint, Report, To report, To denounce, Missing, Disappeared, Femicide, Accused, Defendant, Pistol, Extortion, Soldier, Military, Police, Police officer, Trafficking
+
+![](pca_results.png)
+
+------------------------------------------------------------------------
+
 ## Results - **ARIMA Models**
 
 ![](images/resultados_arima.png){fig-align="center" width="522"}
+
+------------------------------------------------------------------------
+
+## Results - **ARIMA Models**
+
+![](images/resultados_arima.png){fig-align="center" width="522"}
+
+------------------------------------------------------------------------
 
 ## Results - **VAR Model**
 
@@ -389,7 +410,7 @@ Source: National Institute of Statistics and Geography (INEGI)
 | VAR                   | -0.3923  | 20.3284 | 17.0104 | -0.6308 | 6.0221 |
 | VAR + Google Trends   | -2.9899  | 18.0249 | 14.8871 | -1.4215 | 5.2841 |
 
-![](images/final%20de%20finales%20modelo%20mujeres.png){fig-align="center"}
+![](female_results.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
@@ -402,7 +423,7 @@ Source: National Institute of Statistics and Geography (INEGI)
 | VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
 | VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
 
-![](images/final%20de%20finales%20hombres.png){fig-align="center"}
+![](male_results.png){fig-align="center"}
 
 ------------------------------------------------------------------------
 
@@ -414,7 +435,7 @@ Source: National Institute of Statistics and Geography (INEGI)
 -   Policy implications for crime prevention and early warning systems.
 -   It's crucial to develop an effective forecasting strategy for potential interventions in public safety matters
 
-## References {#references}
+## Basic References {#references}
 
 -   Box, G. E., Jenkins, G. M., Reinsel, G. C., & Ljung, G. M. (2015). Time series analysis: forecasting and control. John Wiley & Sons.
 

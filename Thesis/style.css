@@ -102,6 +102,10 @@ strong {
 }
 
 
+#results_pca {
+  font-size: 0.7em; /* Tamaño del cuerpo del texto */
+}
+
 #results_female h2 {
   font-size: 1.1em; /* Tamaño del cuerpo del texto */
 }
