@@ -456,7 +456,7 @@ ggplotly(ph_female, width = 950, height = 450)
 
 <style>
 #results_male .plotly.html-widget {
-    width: 100% !important;
+    width: 200% !important;
     height: 500px !important;
 }
 </style>
