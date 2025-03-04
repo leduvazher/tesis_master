@@ -435,7 +435,11 @@ ph_female <- autoplot(window(var_model[,2], start = c(2006,1), end = c(2020,3), 
         panel.grid.minor = element_blank())  # Elimina las líneas de la cuadrícula menores
 
 # Convertir a plotly
-ggplotly(ph_female, width = 950, height = 450)
+ggplotly(ph_female, width = 950, height = 450) %>%
+  layout(
+    autosize = TRUE,  # Allow dynamic resizing
+    legend = list(x = 1.05, y = 1, xanchor = "left", yanchor = "top")
+  )
 
 
 ```
@@ -467,7 +471,7 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
     panel.grid.minor = element_blank()
   )
 
-ggplotly(ph) %>%
+ggplotly(ph,  width = 950, height = 450) %>%
   layout(
     autosize = TRUE,  # Allow dynamic resizing
     legend = list(x = 1.05, y = 1, xanchor = "left", yanchor = "top")
