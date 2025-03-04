@@ -475,8 +475,10 @@ ggplotly(ph, width = 950, height = 450) %>%
       y = 0,
       xanchor = 'right',
       yanchor = 'bottom',
-      bgcolor = 'rgba(0,0,0,0)'
-    )
+      bgcolor = 'rgba(0,0,0,0)'  # Fondo transparente
+    ),
+    plot_bgcolor = 'rgba(0,0,0,0)',  # Fondo del gráfico transparente
+    paper_bgcolor = 'rgba(0,0,0,0)'  # Fondo del área de la figura transparente
   )
 
 ```
