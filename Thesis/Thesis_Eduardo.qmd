@@ -471,15 +471,14 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
 ggplotly(ph, width = 950, height = 450) %>%
   layout(
     legend = list(
-      x = 0.5,
-      y = 0,
-      xanchor = 'right',
-      yanchor = 'bottom',
-      bgcolor = 'rgba(0,0,0,0)'  # Fondo transparente
+      bgcolor = "transparent",  # Alternativa a rgba(0,0,0,0)
+      font = list(color = "black") # Asegurar texto negro
     ),
-    plot_bgcolor = 'rgba(0,0,0,0)',  # Fondo del gráfico transparente
-    paper_bgcolor = 'rgba(0,0,0,0)'  # Fondo del área de la figura transparente
-  )
+    plot_bgcolor = "transparent", 
+    paper_bgcolor = "transparent"
+  ) %>%
+  config(displayModeBar = FALSE)  # Oculta barra de herramientas para evitar conflictos de renderizado
+
 
 ```
 
