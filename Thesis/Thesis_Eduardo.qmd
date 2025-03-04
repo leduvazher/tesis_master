@@ -432,14 +432,23 @@ ph_female <- autoplot(window(var_model[,2], start = c(2006,1), end = c(2020,3), 
   autolayer(fit_v5ts, series = "ARIMA + GT") +
   theme_bw() +  # Fondo blanco
   theme(panel.grid.major = element_blank(),  # Elimina las líneas de la cuadrícula principales
-        panel.grid.minor = element_blank())  # Elimina las líneas de la cuadrícula menores
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom",  # Mueve la leyenda abajo para evitar cortes
+    axis.title.x = element_blank()  # Oculta la leyenda del eje X        
+        )  # Elimina las líneas de la cuadrícula menores
 
 # Convertir a plotly
 ggplotly(ph_female, width = 950, height = 450) %>%
   layout(
-    autosize = TRUE,  # Allow dynamic resizing
-    legend = list(x = 1.05, y = 1, xanchor = "left", yanchor = "top")
+    autosize = TRUE,
+    legend = list(
+      orientation = "h",  # Orienta la leyenda horizontalmente
+      x = 0.5, y = -0.15,  # Centra la leyenda debajo del gráfico
+      xanchor = "center", yanchor = "top"
+    ),
+    margin = list(l = 80, r = 120, t = 50, b = 80) # Ajusta márgenes para evitar cortes
   )
+
 
 
 ```
