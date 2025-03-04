@@ -467,19 +467,10 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
     panel.grid.minor = element_blank()
   )
 
-ggplotly(ph, width = 950, height = 450) %>%
+ggplotly(ph) %>%
   layout(
-    margin = list(l = 50, r = 200, t = 50, b = 50),  # Increase right margin for legend
-    legend = list(
-      x = 0.5,
-      y = 0.5,  # Position legend more centrally
-      xanchor = 'center',
-      yanchor = 'middle',
-      bgcolor = "transparent",
-      font = list(color = "black")
-    ),
-    plot_bgcolor = "transparent", 
-    paper_bgcolor = "transparent"
+    autosize = TRUE,  # Allow dynamic resizing
+    legend = list(x = 1.05, y = 1, xanchor = "left", yanchor = "top")
   )
 
 
