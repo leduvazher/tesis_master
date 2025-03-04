@@ -459,20 +459,18 @@ ggplotly(ph_female, width = 950, height = 450)
 #results_male {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 .plotly.html-widget {
   width: 100% !important;
-  height: 500px !important;
+  height: 450px !important;
   margin: 0 auto;
 }
 
-.legend {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
+/* Espacio adicional para la leyenda */
+.plot-container {
+  margin-bottom: 60px !important;
 }
 </style>
 
@@ -483,25 +481,37 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
   autolayer(fit_v4ts_hombres, series = "ARIMA") +
   autolayer(fit_v5ts_hombres, series = "ARIMA + GT") +
   theme_bw() +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        legend.position = "bottom",
-        legend.box = "horizontal",
-        legend.justification = "center") 
+  theme(
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    legend.position = "none" # Quitamos la leyenda de ggplot para usar solo la de plotly
+  )
 
-# Convertir a plotly
-ggplotly(ph, width = 900, height = 450) %>% 
+# Convertir a plotly con leyenda interna
+ggplotly(ph, width = 800, height = 400) %>% 
   layout(
     autosize = TRUE,
-    margin = list(l = 50, r = 20, b = 50, t = 50),
+    margin = list(l = 50, r = 20, b = 80, t = 50), # Más espacio en la parte inferior
     legend = list(
-      orientation = "h",
-      xanchor = "center",
-      x = 0.5,
-      y = -0.15
+      orientation = "h",      # Horizontal
+      xanchor = "center",     # Centrada
+      yanchor = "top",        # Anclada arriba
+      x = 0.5,                # Centro horizontal
+      y = -0.2                # Posición vertical (ajustada específicamente para Posit Connect)
+    ),
+    annotations = list(
+      list(
+        text = "Time",
+        x = 0.5,
+        y = -0.1,
+        xref = "paper",
+        yref = "paper",
+        showarrow = FALSE,
+        font = list(size = 14)
+      )
     )
   ) %>%
-  config(displayModeBar = FALSE)
+  config(displayModeBar = FALSE) # Ocultar barra de herramientas
 ```
 
 ------------------------------------------------------------------------
