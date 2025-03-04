@@ -454,10 +454,25 @@ ggplotly(ph_female, width = 950, height = 450)
 | VAR                   | 78.1503  | 113.0374 | 96.1063  | 3.1845  | 3.9697 |
 | VAR + Google Trends   | 43.4894  | 91.3555  | 73.1320  | 1.7737  | 3.0512 |
 
+
 <style>
-#results_male .plotly.html-widget {
-    width: 100% !important;
-    height: 500px !important;
+#results_male {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+.plotly.html-widget {
+  width: 100% !important;
+  height: 500px !important;
+  margin: 0 auto;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
 }
 </style>
 
@@ -469,11 +484,24 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
   autolayer(fit_v5ts_hombres, series = "ARIMA + GT") +
   theme_bw() +
   theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank()) 
+        panel.grid.minor = element_blank(),
+        legend.position = "bottom",
+        legend.box = "horizontal",
+        legend.justification = "center") 
 
 # Convertir a plotly
-ggplotly(p, width = 100%, height = 450) %>% layout(legend = list(orientation = "l", x = 1.1, xanchor = "center"))
-
+ggplotly(ph, width = 900, height = 450) %>% 
+  layout(
+    autosize = TRUE,
+    margin = list(l = 50, r = 20, b = 50, t = 50),
+    legend = list(
+      orientation = "h",
+      xanchor = "center",
+      x = 0.5,
+      y = -0.15
+    )
+  ) %>%
+  config(displayModeBar = FALSE)
 ```
 
 ------------------------------------------------------------------------
