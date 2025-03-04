@@ -471,7 +471,7 @@ ph <- autoplot(window(var_model[,3], start = c(2006,1), end = c(2020,3), frequen
 ggplotly(ph, width = 950, height = 450) %>%
   layout(
     legend = list(
-      x = 1,
+      x = 0.5,
       y = 0,
       xanchor = 'right',
       yanchor = 'bottom'
