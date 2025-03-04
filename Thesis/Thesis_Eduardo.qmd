@@ -474,7 +474,8 @@ ggplotly(ph, width = 950, height = 450) %>%
       x = 0.5,
       y = 0,
       xanchor = 'right',
-      yanchor = 'bottom'
+      yanchor = 'bottom',
+      bgcolor = 'rgba(0,0,0,0)'
     )
   )
 
