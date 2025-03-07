@@ -377,7 +377,7 @@ Source: National Institute of Statistics and Geography (INEGI)
 
 ## Results - **PCA model** {#results_pca}
 
-The selected words captured 71.2% of the total variance: Complaint, Report, To report, To denounce, Missing, Disappeared, Femicide, Accused, Defendant, Pistol, Extortion, Soldier, Military, Police, Police officer, Trafficking
+The selected words captured 71.2% of the total variance (PCA1 included 16 of 20 words)
 
 ![](pca_results.png)
 
