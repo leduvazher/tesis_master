@@ -106,6 +106,10 @@ strong {
   font-size: 0.7em; /* Tamaño del cuerpo del texto */
 }
 
+#google_trends {
+  font-size: 0.7em; /* Tamaño del cuerpo del texto */
+}
+
 #results_female h2 {
   font-size: 1.1em; /* Tamaño del cuerpo del texto */
 }
@@ -124,6 +128,10 @@ strong {
 
 #references {
   font-size: 0.7em;
+}
+
+#conclusions {
+  font-size: 0.8em;
 }
 
 #results_male .plotly.html-widget {

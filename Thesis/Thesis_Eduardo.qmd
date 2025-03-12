@@ -309,6 +309,48 @@ Source: National Institute of Statistics and Geography (INEGI)
     -   Applied PCA to generate a single principal component summarizing crime-related searches.
     -   Selected the first component capturing the highest variance.
 
+## Modeling - Google Trends {#google_trends}
+
+-    **Search Data Sources**: Google Trends gathers data from Google Search, Google News, Google Images, Google Shopping, and YouTube Search. 
+-    **Data Aggregation & Normalization**: Searches are anonymized, aggregated, and scaled on a 0-100 range, where 100 represents peak popularity.
+-    **Geographic & Temporal Insights**: Users can analyze search trends by region and over specific time periods.
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+
+# Cargar los datos
+
+setwd("C:/Users/eduva/Documents/Github/tesis_master/Thesis")
+
+gtrends_data <- read_csv("google_trends_data_examples.csv")
+
+# Asegurar que la columna datetime sea de tipo fecha
+
+df_gtrends_data <- gtrends_data %>% mutate(datetime = as.Date(datetime))
+
+
+# Crear la gráfica con ggplot
+gg_new<- ggplot(df_gtrends_data, aes(x = datetime)) +
+  geom_line(aes(y = denuncia, color = "Denuncia")) +
+  geom_line(aes(y = homicidio, color = "Homicidio")) +
+  geom_line(aes(y = desaparecido, color = "Desaparecido")) +
+  geom_line(aes(y = feminicidio, color = "Feminicidio")) +
+  geom_line(aes(y = pistola, color = "Pistola")) +
+  geom_line(aes(y = militar, color = "Militar")) +
+  geom_line(aes(y = trata, color = "Trata")) +
+  labs(title = "Sample of Google Trends Queries Used in the PCA Analysis",
+       x = "datetime", y = "Google Trends Index", color = "Term") +
+  theme_classic() 
+
+# Convertir la gráfica de ggplot a plotly
+ggplotly(p = gg_new, width = 1000, height = 400)  # Ajusta el tamaño en píxeles
+
+```
+
+
 ## Modeling - ARIMA & VAR Models {#data_model}
 
 <section>
@@ -503,7 +545,7 @@ ggplotly(ph, width = 950, height = 450) %>%
 -   VAR + Google Trends provides the best forecasts.
 -   ARIMA models underperform due to univariate limitations.
 -   Exogenous indicators enhance predictability of homicide trends.
--   Policy implications for crime prevention and early warning systems.
+-   Future research could explore the long-term relationship between homicide rates and Google Trends data using VEC models, Impulse Response tests, or Dynamic Factor Analysis (DFA) to improve forecasting accuracy.
 -   It's crucial to develop an effective forecasting strategy for potential interventions in public safety matters
 
 ## Basic References {#references}
