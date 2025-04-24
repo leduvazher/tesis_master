@@ -177,7 +177,7 @@ Source: Dimensions AI, query= "crime forecasting"
 -   **Year of Occurrence vs. Year of Registration**: Some homicides are registered in a different year from their occurrence, causing inconsistencies in trend analysis.
 -   **Missing Data**: Some homicide records lack information on the exact year of occurrence, leading to potential bias in estimations.
 -   **Publication Lag**: INEGI's homicide data is subject to delays in publication, limiting real-time analysis and decision-making.
--   **Changes in political cycles**: Political cycles can shift as governments adopt new strategies or methodologies (e.g., 2020)
+-   **Changes in political cycles**: Political cycles can shift as governments adopt new strategies or registers classification (e.g., 2020)
 
 ### Google Trends Limitations
 
