@@ -28,7 +28,7 @@ format:
 
 ## Introduction {#intro}
 
--   **Context**: National homicide rates in Mexico have tripled since 1990. Violence generates significant social disruptions. To effectively address this issue, it is essential to shift from a reactive approach to a proactive one, leveraging forecasting techniques to inform strategy and prevention efforts.
+-   **Context**: National homicide rates in Mexico have doubled since 1990. Violence generates significant social disruptions. To effectively address this issue, it is essential to shift from a reactive approach to a proactive one, leveraging forecasting techniques to inform strategy and prevention efforts.
 
 -   **Objective**: Comparing forecasting strategies to predict national adults homicides by sex, using Google Trends data from **2019 to March 2020**
 
@@ -37,7 +37,7 @@ format:
 <section>
 
 -   Homicides are among the top causes of death in Mexico.
--   The rate increased from 8.1 per 100,000 in 1990 to 25 in 2020.
+-   The rate increased from 17.1 per 100,000 in 1990 to 29 in 2020.
 
 ```{r}
 
@@ -419,7 +419,7 @@ ggplotly(p = gg_new, width = 1000, height = 400)  # Ajusta el tamaño en píxele
 
 ## Results - **PCA model** {#results_pca}
 
-The selected words captured 71.2% of the total variance (PCA1 included 16 of 20 words)
+The selected words captured 71.2% of the total variance 
 
 ![](pca_results.png)
 
